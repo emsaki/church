@@ -1,64 +1,114 @@
-<x-app-layout>
+@extends('adminlte::page')
 
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Edit Community (Jumuiya)
-        </h2>
-    </x-slot>
+@section('title', 'Edit Community')
 
-    <div class="max-w-3xl mx-auto py-6">
-        <div class="bg-white p-6 shadow sm:rounded-lg">
+@section('content_header')
+    <h1 class="font-weight-bold">Edit Community (Jumuiya)</h1>
+@stop
 
-            <form method="POST" action="{{ route('admin.communities.update', $community) }}">
-                @csrf
-                @method('PUT')
+@section('content')
 
-                <div class="mb-4">
-                    <label class="block font-medium text-sm text-gray-700">Community Name</label>
-                    <input type="text" name="name"
-                           class="mt-1 block w-full border-gray-300 rounded-md"
-                           value="{{ old('name', $community->name) }}" required>
-                </div>
+<div class="row justify-content-center">
+    <div class="col-md-7">
 
-                <div class="mb-4">
-                    <label class="block font-medium text-sm text-gray-700">Parish</label>
-                    <select name="parish_id" class="mt-1 block w-full border-gray-300 rounded-md" required>
-                        @foreach($parishes as $parish)
-                            <option value="{{ $parish->id }}"
-                                {{ $community->parish_id == $parish->id ? 'selected' : '' }}>
-                                {{ $parish->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
+        {{-- MAIN CARD --}}
+        <div class="card shadow-lg">
 
-                <div class="mb-4">
-                    <label class="block font-medium text-sm text-gray-700">Leader Name</label>
-                    <input type="text" name="leader_name"
-                           class="mt-1 block w-full border-gray-300 rounded-md"
-                           value="{{ old('leader_name', $community->leader_name) }}">
-                </div>
+            {{-- Header --}}
+            <div class="card-header bg-primary text-white">
+                <h3 class="card-title mb-0">
+                    <i class="fas fa-users"></i> Update Community Information
+                </h3>
+            </div>
 
-                <div class="mb-4">
-                    <label class="block font-medium text-sm text-gray-700">Leader Phone</label>
-                    <input type="text" name="leader_phone"
-                           class="mt-1 block w-full border-gray-300 rounded-md"
-                           value="{{ old('leader_phone', $community->leader_phone) }}">
-                </div>
+            {{-- Body --}}
+            <div class="card-body">
 
-                <div class="flex justify-end">
-                    <a href="{{ route('admin.communities.index') }}"
-                       class="px-4 py-2 bg-gray-300 rounded mr-2">Cancel</a>
+                {{-- Validation errors --}}
+                @if ($errors->any())
+                    <div class="alert alert-danger mb-4">
+                        <strong>There were some issues with your input.</strong>
+                    </div>
+                @endif
 
-                    <button type="submit"
-                            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                        Update Community
-                    </button>
-                </div>
+                <form method="POST" action="{{ route('admin.communities.update', $community) }}">
+                    @csrf
+                    @method('PUT')
 
-            </form>
+                    {{-- COMMUNITY NAME --}}
+                    <div class="form-group mb-4">
+                        <label class="font-weight-bold">Community Name <span class="text-danger">*</span></label>
+                        <input type="text"
+                               name="name"
+                               class="form-control @error('name') is-invalid @enderror"
+                               value="{{ old('name', $community->name) }}"
+                               placeholder="Enter community name"
+                               required>
+
+                        @error('name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    {{-- PARISH --}}
+                    <div class="form-group mb-4">
+                        <label class="font-weight-bold">Parish <span class="text-danger">*</span></label>
+                        <select name="parish_id"
+                                class="form-control @error('parish_id') is-invalid @enderror"
+                                required>
+
+                            <option value="">-- Select Parish --</option>
+                            @foreach($parishes as $parish)
+                                <option value="{{ $parish->id }}"
+                                    {{ old('parish_id', $community->parish_id) == $parish->id ? 'selected' : '' }}>
+                                    {{ $parish->name }}
+                                </option>
+                            @endforeach
+                        </select>
+
+                        @error('parish_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    {{-- LEGACY LEADER FIELDS (If still needed) --}}
+                    <div class="form-group mb-4">
+                        <label class="font-weight-bold">Leader Name (Optional)</label>
+                        <input type="text"
+                               name="leader_name"
+                               class="form-control"
+                               value="{{ old('leader_name', $community->leader_name) }}"
+                               placeholder="Enter leader name (optional)">
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label class="font-weight-bold">Leader Phone (Optional)</label>
+                        <input type="text"
+                               name="leader_phone"
+                               class="form-control"
+                               value="{{ old('leader_phone', $community->leader_phone) }}"
+                               placeholder="Enter leader phone (optional)">
+                    </div>
+
+                    {{-- ACTION BUTTONS --}}
+                    <div class="text-right">
+                        <a href="{{ route('admin.communities.index') }}"
+                           class="btn btn-secondary mr-2">
+                            <i class="fas fa-arrow-left"></i> Cancel
+                        </a>
+
+                        <button type="submit" class="btn btn-success px-4">
+                            <i class="fas fa-save"></i> Update Community
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
 
         </div>
-    </div>
 
-</x-app-layout>
+    </div>
+</div>
+
+@stop

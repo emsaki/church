@@ -6,15 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class BaptismRecord extends Model
 {
-    protected $fillable = [
-        'member_id',
-        'submitted_by',
-        'parish_id',
-        'certificate_number',
-        'baptism_date',
-        'status',
-        'notes',
-    ];
+    protected $guarded = [];
 
     public function member()
     {

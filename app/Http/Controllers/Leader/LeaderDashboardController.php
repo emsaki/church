@@ -12,15 +12,12 @@ class LeaderDashboardController extends Controller
     {
         $leaderScc = SmallCommunityLeader::getLeaderScc(auth()->id());
         $scc = $leaderScc?->community;
-
         $membersCount = Member::where('small_community_id', $scc?->id)->count();
-
         $recentMembers = Member::where('small_community_id', $scc?->id)
             ->whereMonth('created_at', now()->month)
             ->get();
 
         $positions = $scc?->leaders()->with('member', 'position')->get();
-
         return view('leader.dashboard', compact(
             'scc',
             'membersCount',

@@ -6,10 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class SmallCommunity extends Model
 {
-    protected $fillable = [
-        'parish_id',
-        'name',
-    ];
+    protected $guarded = [];
 
     public function parish()
     {

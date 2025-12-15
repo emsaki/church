@@ -1,48 +1,63 @@
-<x-app-layout>
+@extends('adminlte::page')
 
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Edit Parish
-        </h2>
-    </x-slot>
+@section('title', 'Edit Parish')
 
-    <div class="max-w-3xl mx-auto py-6">
-        <div class="bg-white p-6 shadow sm:rounded-lg">
+@section('content_header')
+    <h1 class="font-weight-bold">Edit Parish</h1>
+@stop
 
-            <form method="POST" action="{{ route('admin.parishes.update', $parish) }}">
-                @csrf
-                @method('PUT')
+@section('content')
 
-                <div class="mb-4">
-                    <label class="block font-medium text-sm text-gray-700">Parish Name</label>
-                    <input type="text" name="name"
-                           class="mt-1 block w-full border-gray-300 rounded-md"
-                           value="{{ old('name', $parish->name) }}" required>
-                    @error('name')
-                        <div class="text-red-600 text-sm">{{ $message }}</div>
-                    @enderror
-                </div>
+<div class="row justify-content-center">
+    <div class="col-md-8">
 
-                <div class="mb-4">
-                    <label class="block font-medium text-sm text-gray-700">Location</label>
-                    <input type="text" name="location"
-                           class="mt-1 block w-full border-gray-300 rounded-md"
-                           value="{{ old('location', $parish->location) }}">
-                </div>
+        {{-- Main Card --}}
+        <div class="card shadow-lg">
 
-                <div class="flex justify-end">
-                    <a href="{{ route('admin.parishes.index') }}"
-                       class="px-4 py-2 bg-gray-300 rounded mr-2">Cancel</a>
+            {{-- Header --}}
+            <div class="card-header bg-warning text-white">
+                <h3 class="card-title mb-0">
+                    <i class="fas fa-edit"></i> Update Parish Information
+                </h3>
+            </div>
 
-                    <button type="submit"
-                            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                        Update Parish
-                    </button>
-                </div>
+            {{-- Body --}}
+            <div class="card-body">
 
-            </form>
+                {{-- Validation Errors --}}
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <strong>Please fix the errors below:</strong>
+                    </div>
+                @endif
+
+                <form method="POST" action="{{ route('admin.parishes.update', $parish) }}">
+                    @csrf
+                    @method('PUT')
+
+                    {{-- Use the same form partial for consistency --}}
+                    @include('admin.parishes.form')
+
+                    {{-- Action Buttons --}}
+                    <div class="text-right mt-4">
+
+                        <a href="{{ route('admin.parishes.index') }}"
+                           class="btn btn-secondary mr-2">
+                            <i class="fas fa-arrow-left"></i> Cancel
+                        </a>
+
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save"></i> Update Parish
+                        </button>
+
+                    </div>
+                </form>
+
+            </div>
 
         </div>
-    </div>
 
-</x-app-layout>
+    </div>
+</div>
+
+@stop

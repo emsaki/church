@@ -1,41 +1,40 @@
 {{-- resources/views/admin/members/_form.blade.php --}}
 
 @php
-    // When editing, $member is passed. When creating, ensure $member is null-safe.
     $isEdit = isset($member);
 @endphp
 
-<div class="row">
+{{-- ========================= --}}
+{{-- PERSONAL INFORMATION --}}
+{{-- ========================= --}}
+<h4 class="font-weight-bold text-secondary mb-3">
+    <i class="fas fa-id-card"></i> Personal Information
+</h4>
 
-    {{-- FIRST NAME --}}
+<div class="row">
     <div class="col-md-4 mb-3">
-        <label class="form-label">First Name <span class="text-danger">*</span></label>
+        <label class="form-label font-weight-bold">First Name <span class="text-danger">*</span></label>
         <input type="text" name="first_name" class="form-control"
                value="{{ old('first_name', $member->first_name ?? '') }}" required>
     </div>
 
-    {{-- MIDDLE NAME --}}
     <div class="col-md-4 mb-3">
-        <label class="form-label">Middle Name</label>
+        <label class="form-label font-weight-bold">Middle Name</label>
         <input type="text" name="middle_name" class="form-control"
                value="{{ old('middle_name', $member->middle_name ?? '') }}">
     </div>
 
-    {{-- LAST NAME --}}
     <div class="col-md-4 mb-3">
-        <label class="form-label">Last Name <span class="text-danger">*</span></label>
+        <label class="form-label font-weight-bold">Last Name <span class="text-danger">*</span></label>
         <input type="text" name="last_name" class="form-control"
                value="{{ old('last_name', $member->last_name ?? '') }}" required>
     </div>
-
 </div>
 
 
 <div class="row">
-
-    {{-- GENDER --}}
     <div class="col-md-4 mb-3">
-        <label class="form-label">Gender</label>
+        <label class="form-label font-weight-bold">Gender</label>
         <select name="gender" class="form-control">
             <option value="">-- Select --</option>
             <option value="M" {{ old('gender', $member->gender ?? '') == 'M' ? 'selected' : '' }}>Male</option>
@@ -43,26 +42,27 @@
         </select>
     </div>
 
-    {{-- DOB --}}
     <div class="col-md-4 mb-3">
-        <label class="form-label">Date of Birth</label>
+        <label class="form-label font-weight-bold">Date of Birth</label>
         <input type="date" name="dob" class="form-control"
                value="{{ old('dob', $member->dob ?? '') }}">
     </div>
-
 </div>
 
 
+{{-- ========================= --}}
+{{-- PARISH + SCC --}}
+{{-- ========================= --}}
+<h4 class="font-weight-bold text-secondary mt-4 mb-3">
+    <i class="fas fa-church"></i> Parish & Community
+</h4>
 
-{{-- ADMIN CAN SELECT PARISH + SCC --}}
 @if(auth()->user()->hasRole('admin'))
 
 <div class="row">
-
-    {{-- PARISH --}}
     <div class="col-md-6 mb-3">
-        <label class="form-label">Parish</label>
-        <select name="parish_id" class="form-control" required>
+        <label class="form-label font-weight-bold">Parish</label>
+        <select name="parish_id" id="parish_id" class="form-control" required>
             <option value="">-- Select Parish --</option>
             @foreach($parishes as $parish)
                 <option value="{{ $parish->id }}"
@@ -73,10 +73,9 @@
         </select>
     </div>
 
-    {{-- SCC --}}
     <div class="col-md-6 mb-3">
-        <label class="form-label">Small Community (Jumuiya)</label>
-        <select name="small_community_id" class="form-control" required>
+        <label class="form-label font-weight-bold">Small Community (SCC)</label>
+        <select name="small_community_id" id="small_community_id" class="form-control" required>
             <option value="">-- Select SCC --</option>
             @foreach($communities as $c)
                 <option value="{{ $c->id }}"
@@ -86,60 +85,73 @@
             @endforeach
         </select>
     </div>
-
 </div>
 
 @else
-{{-- SCC LEADER FIXED --}}
+
 <input type="hidden" name="parish_id" value="{{ $parishes->first()->id }}">
 <input type="hidden" name="small_community_id" value="{{ $communities->first()->id }}">
 
 <div class="alert alert-info">
-    <strong>Assigned SCC:</strong> {{ $communities->first()->name }}
+    <strong>Your Assigned SCC:</strong> {{ $communities->first()->name }}
 </div>
+
 @endif
 
 
+{{-- ========================= --}}
+{{-- CONTACT INFORMATION --}}
+{{-- ========================= --}}
+<h4 class="font-weight-bold text-secondary mt-4 mb-3">
+    <i class="fas fa-phone"></i> Contact Information
+</h4>
 
 <div class="row">
-
-    {{-- PHONE --}}
     <div class="col-md-4 mb-3">
-        <label class="form-label">Phone</label>
+        <label class="form-label font-weight-bold">Phone</label>
         <input type="text" name="phone" class="form-control"
                value="{{ old('phone', $member->phone ?? '') }}">
     </div>
 
-    {{-- EMAIL --}}
     <div class="col-md-4 mb-3">
-        <label class="form-label">Email</label>
+        <label class="form-label font-weight-bold">Email</label>
         <input type="email" name="email" class="form-control"
                value="{{ old('email', $member->email ?? '') }}">
     </div>
-
 </div>
 
 
+{{-- ========================= --}}
+{{-- BAPTISM INFORMATION --}}
+{{-- ========================= --}}
+<h4 class="font-weight-bold text-secondary mt-4 mb-3">
+    <i class="fas fa-baby"></i> Baptism Information
+</h4>
+
 <div class="row">
 
-    {{-- BAPTISED --}}
     <div class="col-md-4 mb-3">
-        <label class="form-label">Baptised?</label>
-        <select name="is_baptised" class="form-control">
+        <label class="form-label font-weight-bold">Baptised?</label>
+        <select name="is_baptised" id="is_baptised" class="form-control">
             <option value="0">No</option>
             <option value="1" {{ old('is_baptised', $member->is_baptised ?? '') == 1 ? 'selected' : '' }}>Yes</option>
         </select>
     </div>
 
-    {{-- CERTIFICATE --}}
-    <div class="col-md-8 mb-3">
-        <label class="form-label">Baptism Certificate No.</label>
+    <div class="col-md-8 mb-3" id="certificate_section">
+        <label class="form-label font-weight-bold">Baptism Certificate No.</label>
         <input type="text" name="baptism_certificate_no" class="form-control"
                value="{{ old('baptism_certificate_no', $member->baptism_certificate_no ?? '') }}">
     </div>
 
 </div>
 
-<button class="btn btn-primary mt-3">
-    {{ $isEdit ? 'Update Member' : 'Save Member' }}
-</button>
+
+{{-- ========================= --}}
+{{-- SUBMIT BUTTON --}}
+{{-- ========================= --}}
+<div class="text-right mt-4">
+    <button class="btn btn-success px-4 py-2">
+        <i class="fas fa-save"></i> Update Member
+    </button>
+</div>

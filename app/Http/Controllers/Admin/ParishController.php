@@ -51,7 +51,8 @@ class ParishController extends Controller
 
     public function edit(Parish $parish)
     {
-        return view('admin.parishes.edit', compact('parish'));
+        $priests = \App\Models\Priest::orderBy('first_name')->get();
+        return view('admin.parishes.edit', compact('parish', 'priests'));
     }
 
     public function update(Request $request, Parish $parish)

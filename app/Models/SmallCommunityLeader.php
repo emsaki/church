@@ -6,15 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class SmallCommunityLeader extends Model
 {
-    protected $fillable = [
-        'small_community_id',
-        'member_id',
-        'position_id',
-        'assigned_from',
-        'assigned_to',
-        'is_active',
-    ];
-
+    protected $guarded = [];
     public function community()
     {
         return $this->belongsTo(SmallCommunity::class, 'small_community_id');

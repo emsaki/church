@@ -1,86 +1,146 @@
 @extends('adminlte::page')
+
 @section('title', 'Member Profile')
+
 @section('content_header')
-    <h1>Member Profile</h1>
+    <h1 class="font-weight-bold">
+        <i class="fas fa-user text-primary"></i> Member Profile
+    </h1>
 @stop
 
 @section('content')
-    <div class="max-w-4xl mx-auto">
 
+<div class="row justify-content-center">
+    <div class="col-md-10">
+
+        {{-- ========================= --}}
         {{-- HEADER CARD --}}
-        <div class="bg-white shadow rounded p-6 mb-6">
+        {{-- ========================= --}}
+        <div class="card shadow-lg mb-4">
 
-            <h2 class="text-2xl font-semibold text-gray-800 mb-1">
-                {{ $member->full_name }}
-            </h2>
+            <div class="card-header bg-primary text-white">
+                <h3 class="card-title mb-0">
+                    <i class="fas fa-id-card-alt"></i> {{ $member->full_name }}
+                </h3>
+            </div>
 
-            <p class="text-gray-600">
-                <strong>Member ID:</strong> {{ $member->id }}
-            </p>
+            <div class="card-body">
 
-            <p class="text-gray-600">
-                <strong>Parish:</strong> {{ $member->parish->name }}
-            </p>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <p class="text-muted mb-1"><strong>Member ID:</strong></p>
+                        <p class="h5">{{ $member->id }}</p>
+                    </div>
 
-            <p class="text-gray-600">
-                <strong>SCC:</strong> {{ $member->community->name }}
-            </p>
-
-        </div>
-
-
-        {{-- DETAILS CARD --}}
-        <div class="bg-white shadow rounded p-6">
-
-            <h3 class="text-xl font-semibold mb-4 text-gray-700">Personal Information</h3>
-
-            <div class="grid grid-cols-2 gap-4">
-
-                <div>
-                    <label class="text-gray-500">Gender</label>
-                    <p class="font-medium">{{ $member->gender }}</p>
+                    <div class="col-md-6">
+                        <p class="text-muted mb-1"><strong>Gender:</strong></p>
+                        <p class="h5">{{ $member->gender ?? '-' }}</p>
+                    </div>
                 </div>
 
-                <div>
-                    <label class="text-gray-500">Date of Birth</label>
-                    <p class="font-medium">{{ $member->dob ?? '-' }}</p>
-                </div>
+                <hr>
 
-                <div>
-                    <label class="text-gray-500">Phone</label>
-                    <p class="font-medium">{{ $member->phone ?? '-' }}</p>
-                </div>
+                <div class="row">
 
-                <div>
-                    <label class="text-gray-500">Email</label>
-                    <p class="font-medium">{{ $member->email ?? '-' }}</p>
-                </div>
+                    <div class="col-md-6 mb-3">
+                        <p class="text-muted mb-1"><strong>Parish:</strong></p>
+                        <p class="h5">{{ $member->parish?->name }}</p>
+                    </div>
 
-                <div>
-                    <label class="text-gray-500">Baptised?</label>
-                    <p class="font-medium">
-                        {{ $member->is_baptised ? 'Yes' : 'No' }}
-                    </p>
-                </div>
+                    <div class="col-md-6 mb-3">
+                        <p class="text-muted mb-1"><strong>Small Christian Community (SCC):</strong></p>
+                        <p class="h5">{{ $member->community?->name ?? '-' }}</p>
+                    </div>
 
-                <div>
-                    <label class="text-gray-500">Baptism Certificate No.</label>
-                    <p class="font-medium">
-                        {{ $member->baptism_certificate_no ?? '-' }}
-                    </p>
                 </div>
 
             </div>
-
         </div>
 
+
+        {{-- ========================= --}}
+        {{-- PERSONAL DETAILS CARD --}}
+        {{-- ========================= --}}
+        <div class="card shadow-lg mb-4">
+
+            <div class="card-header bg-secondary text-white">
+                <h3 class="card-title mb-0">
+                    <i class="fas fa-user-circle"></i> Personal Information
+                </h3>
+            </div>
+
+            <div class="card-body">
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted">Date of Birth</label>
+                        <p class="font-weight-bold">{{ $member->dob ?? '-' }}</p>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted">Phone</label>
+                        <p class="font-weight-bold">{{ $member->phone ?? '-' }}</p>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted">Email</label>
+                        <p class="font-weight-bold">{{ $member->email ?? '-' }}</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        {{-- ========================= --}}
+        {{-- BAPTISM DETAILS CARD --}}
+        {{-- ========================= --}}
+        <div class="card shadow-lg mb-4">
+
+            <div class="card-header bg-info text-white">
+                <h3 class="card-title mb-0">
+                    <i class="fas fa-baby"></i> Baptism Information
+                </h3>
+            </div>
+
+            <div class="card-body">
+
+                <div class="row">
+
+                    <div class="col-md-4 mb-3">
+                        <label class="text-muted">Baptised?</label>
+                        <p class="font-weight-bold">
+                            {{ $member->is_baptised ? 'Yes' : 'No' }}
+                        </p>
+                    </div>
+
+                    <div class="col-md-8 mb-3">
+                        <label class="text-muted">Baptism Certificate No.</label>
+                        <p class="font-weight-bold">
+                            {{ $member->baptism_certificate_no ?? '-' }}
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+
+        {{-- ========================= --}}
         {{-- BUTTONS --}}
-        <div class="mt-6 flex space-x-4">
+        {{-- ========================= --}}
+        <div class="d-flex justify-content-end gap-2">
+
+            <a href="{{ route('admin.members.index') }}" class="btn btn-secondary mr-2">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
 
             @if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('scc_leader'))
                 <a href="{{ route('admin.members.edit', $member) }}"
-                   class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                    Edit Member
+                   class="btn btn-primary mr-2">
+                    <i class="fas fa-edit"></i> Edit Member
                 </a>
             @endif
 
@@ -90,17 +150,15 @@
                     @csrf
                     @method('DELETE')
 
-                    <button class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
-                        Delete Member
+                    <button class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Delete
                     </button>
                 </form>
             @endif
 
-            <a href="{{ route('admin.members.index') }}"
-               class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
-                Back
-            </a>
         </div>
 
     </div>
+</div>
+
 @stop

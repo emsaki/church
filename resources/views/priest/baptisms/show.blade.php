@@ -2,38 +2,90 @@
 
 @section('title', 'Baptism Request Details')
 
-@section('content_header')
-    <h1>Baptism Request Details</h1>
-@stop
-
 @section('content')
-<div class="py-6">
-        <div class="max-w-4xl mx-auto bg-white p-6 shadow rounded">
-            <h3 class="text-lg font-bold mb-3">Applicant Information</h3>
-            <p><strong>Name:</strong>
+
+<div class="container mt-4">
+
+    <div class="card shadow-lg">
+
+        {{-- Header --}}
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">
+                Baptism Request Details – 
                 {{ $record->member?->full_name ?? $record->full_name }}
-            </p>
-            @if($record->dob)
-                <p><strong>Date of Birth:</strong> {{ $record->dob }}
-                </p>
+            </h3>
+        </div>
+
+        <div class="card-body">
+
+            {{-- Applicant Information --}}
+            <h4 class="text-secondary font-weight-bold mb-3">Applicant Information</h4>
+
+            <table class="table table-striped table-bordered mb-4">
+                <tbody>
+                    <tr>
+                        <th width="30%">Name</th>
+                        <td>{{ $record->member?->full_name ?? $record->full_name }}</td>
+                    </tr>
+
+                    @if($record->dob)
+                    <tr>
+                        <th>Date of Birth</th>
+                        <td>{{ $record->dob }}</td>
+                    </tr>
+                    @endif
+
+                    <tr>
+                        <th>Father</th>
+                        <td>{{ $record->father_name ?? '-' }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Mother</th>
+                        <td>{{ $record->mother_name ?? '-' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            {{-- Request Information --}}
+            <h4 class="text-secondary font-weight-bold mb-3">Request Details</h4>
+
+            <table class="table table-striped table-bordered mb-4">
+                <tbody>
+                    <tr>
+                        <th width="30%">Status</th>
+                        <td>
+                            <span class="badge badge-warning text-dark px-3 py-2">
+                                {{ ucfirst($record->status) }}
+                            </span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>Submitted By</th>
+                        <td>{{ $record->submitter?->name }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Notes</th>
+                        <td>{{ $record->notes ?? '-' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            {{-- Approve Button --}}
+            @if($record->status === 'pending')
+                <div class="text-right">
+                    <a href="{{ route('priest.baptisms.approve', $record->id) }}"
+                       class="btn btn-success btn-lg">
+                        <i class="fas fa-check-circle"></i> Approve Baptism
+                    </a>
+                </div>
             @endif
-            <p><strong>Father:</strong> {{ $record->father_name ?? '-' }}</p>
-            <p><strong>Mother:</strong> {{ $record->mother_name ?? '-' }}</p>
-            <hr class="my-4">
-            <h3 class="text-lg font-bold mb-3">Request Details</h3>
-            <p><strong>Status:</strong>
-                <span class="px-2 py-1 bg-yellow-200 rounded">{{ ucfirst($record->status) }}</span>
-            </p>
-            <p><strong>Submitted by:</strong> {{ $record->submitter?->name }}
-            </p>
-            <p><strong>Notes:</strong> {{ $record->notes ?? '-' }}
-            </p>
-            <div class="mt-3">
-                <a href="{{ route('priest.baptisms.approve', $record->id) }}"
-                class="btn btn-primary btn-sm">
-                    Approve Baptism
-                </a>
-            </div>
+
         </div>
     </div>
-@stop
+
+</div>
+
+@endsection

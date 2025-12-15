@@ -6,13 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Parish extends Model
 {
-    protected $fillable = [
-        'name',
-        'priest_id',
-        'phone',
-        'email',
-        'location',
-    ];
+    protected $guarded = [];
 
     public function priest()
     {

@@ -3,57 +3,79 @@
 @section('title', 'Assign SCC Leader')
 
 @section('content_header')
-    <h1>{!! "'Members of ' . $community->name" !!}</h1>
+    <h1 class="font-weight-bold">
+        <i class="fas fa-users text-primary"></i>
+        Members of {{ $community->name }}
+    </h1>
 @stop
 
 @section('content')
-    <div class="mb-6">
-        <a href="{{ route('admin.communities.index') }}"
-           class="text-blue-600 hover:underline">&larr; Back to Communities</a>
+
+{{-- BACK BUTTON --}}
+<div class="mb-3">
+    <a href="{{ route('admin.communities.index') }}" class="btn btn-secondary btn-sm">
+        <i class="fas fa-arrow-left"></i> Back to Communities
+    </a>
+</div>
+
+{{-- MAIN CARD --}}
+<div class="card shadow-lg">
+
+    {{-- CARD HEADER --}}
+    <div class="card-header bg-primary text-white">
+        <h3 class="card-title mb-0">
+            <i class="fas fa-church"></i>
+            {{ $community->name }} — {{ $community->parish->name }}
+        </h3>
     </div>
 
-    <div class="bg-white shadow rounded p-6">
-        <h2 class="text-xl font-semibold mb-4">
-            {{ $community->name }} ({{ $community->parish->name }})
-        </h2>
+    {{-- CARD BODY --}}
+    <div class="card-body p-0">
 
-        <table class="min-w-full border">
-            <thead>
-                <tr class="bg-gray-100 border-b">
-                    <th class="px-4 py-2">Name</th>
-                    <th class="px-4 py-2">Gender</th>
-                    <th class="px-4 py-2">Phone</th>
-                    <th class="px-4 py-2">Actions</th>
+        <table class="table table-striped table-hover mb-0">
+            <thead class="thead-light">
+                <tr>
+                    <th style="width: 35%">Name</th>
+                    <th style="width: 15%">Gender</th>
+                    <th style="width: 20%">Phone</th>
+                    <th style="width: 20%" class="text-right">Actions</th>
                 </tr>
             </thead>
 
             <tbody>
                 @forelse($members as $m)
-                    <tr class="border-b">
-                        <td class="px-4 py-2">
-                            {{ $m->first_name }} {{ $m->middle_name }} {{ $m->last_name }}
-                        </td>
-                        <td class="px-4 py-2">{{ ucfirst($m->gender) }}</td>
-                        <td class="px-4 py-2">{{ $m->phone ?? '-' }}</td>
+                    <tr>
+                        <td>{{ $m->first_name }} {{ $m->middle_name }} {{ $m->last_name }}</td>
+                        <td>{{ ucfirst($m->gender) }}</td>
+                        <td>{{ $m->phone ?? '-' }}</td>
 
-                        <td class="px-4 py-2">
+                        <td class="text-right">
                             <a href="{{ route('admin.members.edit', $m) }}"
-                               class="text-blue-600 hover:underline">Edit</a>
+                               class="btn btn-sm btn-primary">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
                         </td>
                     </tr>
+
                 @empty
                     <tr>
-                        <td colspan="4" class="text-center py-3 text-gray-500">
-                            No members found.
+                        <td colspan="4" class="text-center py-4 text-muted">
+                            <i class="fas fa-info-circle"></i> No members found in this SCC.
                         </td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
 
-        <div class="mt-4">
+    </div>
+
+    {{-- FOOTER WITH PAGINATION --}}
+    <div class="card-footer">
+        <div class="d-flex justify-content-end">
             {{ $members->links() }}
         </div>
     </div>
+
+</div>
 
 @stop

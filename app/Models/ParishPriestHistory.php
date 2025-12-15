@@ -8,12 +8,7 @@ class ParishPriestHistory extends Model
 {
     protected $table = 'parish_priest_history';
 
-    protected $fillable = [
-        'parish_id',
-        'priest_id',
-        'assigned_from',
-        'assigned_to',
-    ];
+    protected $guarded = [];
 
     public function parish()
     {
