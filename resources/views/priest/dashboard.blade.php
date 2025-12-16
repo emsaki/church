@@ -50,6 +50,18 @@
             <div class="icon"><i class="fas fa-cross"></i></div>
         </div>
     </div>
+    <div class="col-lg-3 col-6">
+        <a href="{{ route('priest.tithes.index') }}">
+            <div class="small-box bg-teal">
+                <div class="inner">
+                    <h3>{{ number_format($titheTotal ?? 0) }}</h3>
+                    <p>Total Tithes</p>
+                </div>
+                <div class="icon"><i class="fas fa-hand-holding-usd"></i></div>
+            </div>
+        </a>
+    </div>
+
 
 </div> {{-- end stats row --}}
 

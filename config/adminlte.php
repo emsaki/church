@@ -376,6 +376,12 @@ return [
             'icon'  => 'fas fa-cross',
             'can'   => 'is-priest',
         ],
+        [
+            'text' => 'Tithe Reports',
+            'route' => 'priest.tithes.index',
+            'icon'  => 'fas fa-money-bill-wave',
+            'can'   => 'is-priest',
+        ],
 
         [
             'text' => 'Baptism Requests',
@@ -399,6 +405,29 @@ return [
             'route' => 'leader.members.index',
             'icon'  => 'fas fa-user-friends',
             'can'   => 'is-scc-leader',
+        ],
+
+        [
+            'text' => 'Tithes',
+            'icon' => 'fas fa-donate',
+            'can'  => 'scc_leader',
+            'submenu' => [
+                [
+                    'text' => 'Dashboard',
+                    'route'  => 'leader.tithes.dashboard',
+                    'icon' => 'fas fa-chart-line',
+                ],
+                [
+                    'text' => 'Record Tithe',
+                    'route'  => 'leader.tithes.create',
+                    'icon' => 'fas fa-hand-holding-usd',
+                ],
+                [
+                    'text' => 'All Records',
+                    'route'  => 'leader.tithes.index',
+                    'icon' => 'fas fa-list',
+                ],
+            ],
         ],
 
         [

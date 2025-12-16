@@ -29,4 +29,9 @@ class Member extends Model
         return $this->hasMany(SmallCommunityLeader::class);
     }
 
+    public function tithes()
+    {
+        return $this->hasMany(Tithe::class, 'member_id');
+    }
+
 }

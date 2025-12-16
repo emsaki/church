@@ -74,4 +74,15 @@ class User extends Authenticatable
     {
         return $this->hasOne(Priest::class);
     }
+
+    public function parish()
+    {
+        return $this->belongsTo(Parish::class);
+    }
+
+    public function leaderScc()
+    {
+        return $this->hasOne(\App\Models\SmallCommunityLeader::class, 'user_id');
+    }
+
 }

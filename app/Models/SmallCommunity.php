@@ -38,4 +38,9 @@ class SmallCommunity extends Model
         return $this->hasOne(SmallCommunityLeader::class)->where('is_active', true);
     }
 
+    public function tithes()
+    {
+        return $this->hasMany(Tithe::class, 'small_community_id');
+    }
+
 }

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Priest;
 
-use App\Http\Controllers\Controller;
-use App\Models\BaptismRecord;
+use App\Models\Parish;
 use Illuminate\Http\Request;
+use App\Models\BaptismRecord;
+use App\Http\Controllers\Controller;
 
 class BaptismApprovalController extends Controller
 {
@@ -23,8 +24,7 @@ class BaptismApprovalController extends Controller
 
     public function edit(BaptismRecord $record)
     {
-        $parishes = auth()->user()->parishes;
-
+        $parishes = Parish::all();
         return view('priest.baptisms.edit', compact('record', 'parishes'));
     }
 

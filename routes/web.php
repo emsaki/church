@@ -92,6 +92,13 @@ Route::middleware(['auth', 'role:admin'])
 
         // Positions
         Route::resource('positions', PositionController::class);
+        // TITHE MANAGEMENT ROUTES
+        Route::get('/tithes', [\App\Http\Controllers\Admin\TitheController::class, 'index'])->name('tithes.index');
+        Route::get('/tithes/{tithe}/edit', [\App\Http\Controllers\Admin\TitheController::class, 'edit'])->name('tithes.edit');
+        Route::put('/tithes/{tithe}', [\App\Http\Controllers\Admin\TitheController::class, 'update'])->name('tithes.update');
+        Route::delete('/tithes/{tithe}', [\App\Http\Controllers\Admin\TitheController::class, 'destroy'])->name('tithes.destroy');
+        Route::get('/tithes/dashboard', [App\Http\Controllers\Admin\TitheDashboardController::class, 'index'])->name('tithes.dashboard');
+        Route::put('/tithes/{tithe}/verify', [App\Http\Controllers\Admin\TitheController::class, 'verify'])->name('tithes.verify');
     });
 
 // ---------------------------------------------------------------
@@ -115,13 +122,17 @@ Route::middleware(['auth', 'role:priest'])
                 'baptised'     => \App\Models\Member::whereIn('parish_id', $parishIds)->where('is_baptised', 1)->count(),
             ]);
         })->name('dashboard');
-        Route::get('/baptisms', [BaptismApprovalController::class, 'index'])->name('baptisms.index');
-        Route::get('/baptisms/{record}/edit', [BaptismApprovalController::class, 'edit'])->name('baptisms.edit');
-        Route::post('/baptisms/{record}', [BaptismApprovalController::class, 'update'])->name('baptisms.update');
+        // Baptisms (Priest)
         Route::get('/baptisms', [\App\Http\Controllers\Priest\BaptismController::class, 'index'])->name('baptisms.index');
         Route::get('/baptisms/{record}', [\App\Http\Controllers\Priest\BaptismController::class, 'show'])->name('baptisms.show');
         Route::get('/baptisms/{record}/approve', [\App\Http\Controllers\Priest\BaptismController::class, 'approveForm'])->name('baptisms.approve');
-        Route::post('/baptisms/{record}/approve', [\App\Http\Controllers\Priest\BaptismController::class, 'approve'])->name('baptisms.approve.save');
+        Route::put('/baptisms/{record}/approve', [\App\Http\Controllers\Priest\BaptismController::class, 'approve'])->name('baptisms.approve.save');
+
+        // Tithes
+        Route::get('/tithes', [\App\Http\Controllers\Priest\TitheReportController::class, 'index'])->name('tithes.index');
+        Route::get('/tithes/parish/{parish}', [\App\Http\Controllers\Priest\TitheReportController::class, 'showParish'])->name('tithes.parish');
+        Route::get('/tithes/scc/{community}', [\App\Http\Controllers\Priest\TitheReportController::class, 'showScc'])->name('tithes.scc');
+        Route::get('/tithes/member/{member}', [\App\Http\Controllers\Priest\TitheReportController::class, 'showMember'])->name('tithes.member');
     });
 
 // ---------------------------------------------------------------
@@ -131,14 +142,25 @@ Route::middleware(['auth', 'role:scc_leader'])
     ->prefix('leader')
     ->name('leader.')
     ->group(function () {
-        Route::get('/dashboard', [LeaderDashboardController::class, 'index'])->name('dashboard');
-        Route::get('/baptisms', [App\Http\Controllers\Leader\BaptismController::class, 'index'])->name('baptisms.index');
-        Route::get('/baptisms/create/{member}', [App\Http\Controllers\Leader\BaptismController::class, 'create'])->name('baptisms.create');
-        Route::post('/baptisms', [App\Http\Controllers\Leader\BaptismController::class, 'store'])->name('baptisms.store');
-        // SCC leaders manage ONLY their SCC members
-        Route::resource('members', MemberController::class)->except(['destroy']); // cannot delete
-        Route::resource('baptisms', App\Http\Controllers\Leader\BaptismController::class)->only(['index','create','store']);
 
+        Route::get('/dashboard', [LeaderDashboardController::class, 'index'])->name('dashboard');
+
+        // TITHES
+        Route::get('/tithes', [\App\Http\Controllers\Leader\TitheController::class, 'index'])->name('tithes.index');
+        Route::get('/tithes/create', [\App\Http\Controllers\Leader\TitheController::class, 'create'])->name('tithes.create');
+        Route::get('/tithes/scc_member/{member}', [\App\Http\Controllers\Leader\TitheController::class, 'sccMember'])->name('tithes.scc_member');
+        Route::get('/member/profile/{member}', [MemberController::class, 'profile'])->name('members.profile');
+        Route::post('/tithes', [\App\Http\Controllers\Leader\TitheController::class, 'store'])->name('tithes.store');
+        Route::get('/tithes/{tithe}/edit', [\App\Http\Controllers\Leader\TitheController::class, 'edit'])->name('tithes.edit');
+        Route::put('/tithes/{tithe}', [\App\Http\Controllers\Leader\TitheController::class, 'update'])->name('tithes.update');
+        Route::delete('/tithes/{tithe}', [\App\Http\Controllers\Leader\TitheController::class, 'destroy'])->name('tithes.destroy');
+        Route::get('/tithes/{tithe}/receipt', [\App\Http\Controllers\Leader\TitheController::class, 'receipt'])->name('tithes.receipt');
+        Route::get('/tithes/dashboard', [\App\Http\Controllers\Leader\TitheController::class, 'dashboard'])->name('tithes.dashboard');
+
+        // Baptisms
+        Route::resource('baptisms', \App\Http\Controllers\Leader\BaptismController::class)->only(['index','create','store']);
+        // Members
+        Route::resource('members', \App\Http\Controllers\Leader\MemberController::class);
     });
 
 require __DIR__.'/auth.php';

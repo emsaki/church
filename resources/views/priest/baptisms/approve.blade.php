@@ -2,50 +2,108 @@
 
 @section('title', 'Approve Baptism')
 
+@section('content_header')
+    <h1 class="font-weight-bold text-primary">
+        <i class="fas fa-water"></i> Approve Baptism Request
+    </h1>
+@stop
+
 @section('content')
 
-<div class="container mt-4">
+<div class="card shadow-lg">
 
-    <div class="card shadow-lg">
+    {{-- CARD HEADER --}}
+    <div class="card-header bg-primary text-white">
+        <h3 class="card-title mb-0">
+            <i class="fas fa-check-circle"></i> Baptism Approval Form
+        </h3>
+    </div>
 
-        {{-- Header --}}
-        <div class="card-header bg-success text-white">
-            <h3 class="mb-0">
-                Approve Baptism – {{ $record->member?->full_name ?? $record->full_name }}
-            </h3>
+    {{-- CARD BODY --}}
+    <div class="card-body">
+
+        {{-- APPLICANT DETAILS --}}
+        <div class="alert alert-secondary">
+            <strong><i class="fas fa-user"></i> Applicant:</strong>
+            {{ $record->member?->full_name ?? $record->full_name }}
+
+            @if($record->dob)
+                <br>
+                <strong><i class="fas fa-birthday-cake"></i> DOB:</strong>
+                {{ $record->dob }}
+            @endif
         </div>
 
-        <div class="card-body">
+        <form method="POST" action="{{ route('priest.baptisms.approve.save', $record) }}">
+            @csrf
+            @method('PUT')
+            <div class="row">
 
-            <h4 class="text-secondary font-weight-bold mb-3">Baptism Approval Form</h4>
-
-            <form action="{{ route('priest.baptisms.approve.save', $record->id) }}" method="POST">
-                @csrf
-
-                <div class="form-group">
-                    <label><strong>Certificate Number</strong> <span class="text-danger">*</span></label>
-                    <input type="text" name="certificate_number" class="form-control" required>
+                {{-- STATUS --}}
+                <div class="col-md-6 mb-3">
+                    <label class="font-weight-bold">
+                        <i class="fas fa-info-circle"></i> Approval Status
+                    </label>
+                    <select name="status" class="form-control" required>
+                        <option value="approved">Approve</option>
+                        <option value="rejected">Reject</option>
+                    </select>
                 </div>
 
-                <div class="form-group">
-                    <label><strong>Baptism Date</strong> <span class="text-danger">*</span></label>
-                    <input type="date" name="baptism_date" class="form-control" required>
+                {{-- CERTIFICATE NUMBER --}}
+                <div class="col-md-6 mb-3">
+                    <label class="font-weight-bold">
+                        <i class="fas fa-file-alt"></i> Certificate Number
+                    </label>
+                    <input type="text" name="certificate_number" class="form-control"
+                           placeholder="Enter certificate number">
                 </div>
 
-                <div class="form-group">
-                    <label><strong>Notes (Optional)</strong></label>
-                    <textarea name="notes" rows="3" class="form-control"></textarea>
+            </div>
+
+            <div class="row">
+
+                {{-- BAPTISM DATE --}}
+                <div class="col-md-6 mb-3">
+                    <label class="font-weight-bold">
+                        <i class="fas fa-calendar-alt"></i> Baptism Date
+                    </label>
+                    <input type="date" name="baptism_date" class="form-control">
                 </div>
 
-                <button type="submit" class="btn btn-success btn-lg btn-block mt-3">
-                    <i class="fas fa-check-circle"></i> Confirm Baptism
+                {{-- PARISH --}}
+                <div class="col-md-6 mb-3">
+                    <label class="font-weight-bold">
+                        <i class="fas fa-church"></i> Baptism Parish
+                    </label>
+                    <select name="parish_id" class="form-control" required>
+                        @foreach($parishes as $parish)
+                            <option value="{{ $parish->id }}">{{ $parish->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+            </div>
+
+            {{-- NOTES (optional) --}}
+            <div class="mb-3">
+                <label class="font-weight-bold">
+                    <i class="fas fa-comment-dots"></i> Notes (Optional)
+                </label>
+                <textarea name="notes" rows="3" class="form-control"
+                          placeholder="Additional remarks..."></textarea>
+            </div>
+
+            {{-- SUBMIT BUTTON --}}
+            <div class="text-right mt-4">
+                <button class="btn btn-success px-4 py-2">
+                    <i class="fas fa-save"></i> Approve
                 </button>
+            </div>
 
-            </form>
-
-        </div>
+        </form>
     </div>
 
 </div>
 
-@endsection
+@stop

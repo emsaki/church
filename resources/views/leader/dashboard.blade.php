@@ -132,10 +132,12 @@
             </a>
 
             {{-- Manage Leaders --}}
+            @if(auth()->user()->hasRole('admin'))
             <a href="{{ route('admin.communities.leader', ['community' => $scc?->id]) }}"
                class="btn btn-outline-warning">
                 <i class="fas fa-user-shield"></i> Manage Leaders
             </a>
+            @endif
 
         </div>
 

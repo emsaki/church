@@ -23,37 +23,6 @@ class SmallCommunityLeaderController extends Controller
         return view('admin.communities.show', compact('community'));
     }
 
-    // public function update(Request $request, SmallCommunity $community)
-    // {
-    
-    //     $request->validate([
-    //         'member_id' => 'required|exists:members,id',
-    //         'position_id' => 'required|exists:positions,id',
-
-    //     ]);
-
-    //     // Close old leader
-    //     SmallCommunityLeader::where('small_community_id', $community->id)
-    //         ->where('is_active', true)
-    //         ->where('position_id', $request->position_id)
-    //         ->update([
-    //             'is_active' => false,
-    //             'assigned_to' => now(),
-    //         ]);
-
-    //     // Assign new leader
-    //     SmallCommunityLeader::create([
-    //         'small_community_id' => $community->id,
-    //         'member_id' => $request->member_id,
-    //         'position_id' => $request->position_id,
-    //         'assigned_from' => now(),
-    //         'is_active' => true,
-    //     ]);
-
-    //     return redirect()->route('admin.communities.index')
-    //         ->with('success', 'Leader assigned successfully.');
-    // }
-
     public function update(Request $request, SmallCommunity $community)
     {
         $validated = $request->validate([

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Priest;
 
-use App\Http\Controllers\Controller;
-use App\Models\BaptismRecord;
+use App\Models\Parish;
 use Illuminate\Http\Request;
+use App\Models\BaptismRecord;
+use App\Http\Controllers\Controller;
 
 class BaptismController extends Controller
 {
@@ -26,29 +27,73 @@ class BaptismController extends Controller
         return view('priest.baptisms.index', compact('records'));
     }
 
+    // public function index()
+    // {
+    //     // Only show records for parishes priest oversees
+    //     $parishIds = auth()->user()->parishes->pluck('id');
+
+    //     $records = BaptismRecord::whereIn('parish_id', $parishIds)
+    //                 ->orWhereNull('parish_id')
+    //                 ->with('member')
+    //                 ->get();
+
+    //     return view('priest.baptisms.index', compact('records'));
+    // }
+
     public function show(BaptismRecord $record)
     {
         return view('priest.baptisms.show', compact('record'));
     }
 
-    public function approveForm(BaptismRecord $record)
+    public function edit(BaptismRecord $record)
     {
-        return view('priest.baptisms.approve', compact('record'));
+        $parishes = Parish::all();
+        return view('priest.baptisms.edit', compact('record', 'parishes'));
     }
 
-    public function approve(Request $request, BaptismRecord $record)
+    public function update(Request $request, BaptismRecord $record)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:approved,rejected',
+            'certificate_number' => 'nullable|string',
+            'baptism_date' => 'nullable|date',
+            'parish_id' => 'nullable|exists:parishes,id',
+        ]);
+
+        $record->update($validated);
+
+        // Auto-update member baptism flag
+        if ($validated['status'] === 'approved') {
+            $record->member->update([
+                'is_baptised' => 1,
+                'baptism_certificate_no' => $validated['certificate_number'],
+            ]);
+        }
+
+        return back()->with('success', 'Baptism record updated.');
+    }
+
+    public function approveForm(BaptismRecord $record)
+    {
+         $parishes = Parish::all();
+        return view('priest.baptisms.approve', compact('record', 'parishes'));
+    }
+
+    public function approve(Request $request, $record)
     {
         $validated = $request->validate([
             'certificate_number' => 'required|string|max:255',
             'baptism_date' => 'required|date',
             'notes' => 'nullable|string',
+            'status' => 'required|string',
         ]);
 
-        $record->update([
+        $baptism_record = BaptismRecord::findOrFail($record);
+        $baptism_record->update([
             'certificate_number' => $validated['certificate_number'],
             'baptism_date' => $validated['baptism_date'],
-            'status' => 'baptized',
-            'notes' => $validated['notes'] ?? $record->notes,
+            'status' =>  $validated['status'],
+            'notes' => $validated['notes'] ?? $baptism_record->notes,
         ]);
 
         return redirect()->route('priest.baptisms.index')

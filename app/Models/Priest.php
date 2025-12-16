@@ -22,4 +22,10 @@ class Priest extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function parish()
+    {
+        return $this->hasOne(Parish::class, 'priest_id');
+    }
+
 }
