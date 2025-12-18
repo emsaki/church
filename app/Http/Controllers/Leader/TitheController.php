@@ -13,20 +13,20 @@ class TitheController extends Controller
 {
     public function index()
     {
-        $leaderScc = auth()->user()->leaderScc();
+        $leaderScc = auth()->user()->leaderScc;
         if (!$leaderScc) {
             abort(403, "No SCC assigned.");
         }
 
-        $members = $leaderScc->members;
+        $members = $leaderScc->community->members;
         $tithes = Tithe::with('member')
-            ->where('small_community_id', $leaderScc->id)
+            ->where('small_community_id', $leaderScc->small_community_id)
             ->latest()
             ->get();
 
         $totals = $tithes->sum('amount');
         $topContributors = Tithe::selectRaw('member_id, SUM(amount) as total')
-            ->where('small_community_id', $leaderScc->id)
+            ->where('small_community_id', $leaderScc->small_community_id)
             ->groupBy('member_id')
             ->orderByDesc('total')
             ->with('member')
@@ -132,12 +132,11 @@ class TitheController extends Controller
     public function dashboard()
     {
         $leaderScc = auth()->user()->leaderScc;
-
         if (!$leaderScc) {
             abort(403, "You are not assigned to an SCC.");
         }
 
-        $sccId = $leaderScc->small_community_id ?? $leaderScc->id;
+        $sccId = $leaderScc->small_community_id ?? $leaderScc->community->id;
 
         // WEEK SUMMARY
         $weekTotal = Tithe::where('small_community_id', $sccId)

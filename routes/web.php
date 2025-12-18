@@ -12,14 +12,23 @@ use App\Http\Controllers\Leader\BaptismController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\SmallCommunityController;
 use App\Http\Controllers\Leader\LeaderDashboardController;
-use App\Http\Controllers\Priest\BaptismApprovalController;
 use App\Http\Controllers\Admin\SmallCommunityLeaderController;
 
 // ---------------------------------------------------------------
 // PUBLIC WELCOME PAGE
 // ---------------------------------------------------------------
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 Route::get('/', function () {
-    return view('welcome');
+    if (auth()->check()) {
+        if (auth()->user()->isAdmin()) return redirect()->route('admin.dashboard');
+        if (auth()->user()->isPriest()) return redirect()->route('priest.dashboard');
+        if (auth()->user()->isSccLeader()) return redirect()->route('leader.dashboard');
+
+        return redirect()->route('dashboard');
+    }
+    return view('auth.login');
 });
 
 // AJAX route: Load communities by parish (for dropdown)
@@ -85,10 +94,10 @@ Route::middleware(['auth', 'role:admin'])
         // Members
         Route::resource('members', MemberController::class);
 
-        // User Roles
-        Route::get('/roles', [UserRoleController::class, 'index'])->name('roles.index');
-        Route::get('/roles/{user}/edit', [UserRoleController::class, 'edit'])->name('roles.edit');
-        Route::put('/roles/{user}', [UserRoleController::class, 'update'])->name('roles.update');
+        // // User Roles
+        // Route::get('/roles', [UserRoleController::class, 'index'])->name('roles.index');
+        // Route::get('/roles/{user}/edit', [UserRoleController::class, 'edit'])->name('roles.edit');
+        // Route::put('/roles/{user}', [UserRoleController::class, 'update'])->name('roles.update');
 
         // Positions
         Route::resource('positions', PositionController::class);
@@ -99,6 +108,37 @@ Route::middleware(['auth', 'role:admin'])
         Route::delete('/tithes/{tithe}', [\App\Http\Controllers\Admin\TitheController::class, 'destroy'])->name('tithes.destroy');
         Route::get('/tithes/dashboard', [App\Http\Controllers\Admin\TitheDashboardController::class, 'index'])->name('tithes.dashboard');
         Route::put('/tithes/{tithe}/verify', [App\Http\Controllers\Admin\TitheController::class, 'verify'])->name('tithes.verify');
+
+           // TITHES
+        Route::get('/tithes/create', [\App\Http\Controllers\Admin\TitheController::class, 'create'])->name('tithes.create');
+        Route::get('/tithes/scc_member/{member}', [\App\Http\Controllers\Admin\TitheController::class, 'sccMember'])->name('tithes.scc_member');
+        Route::get('/tithes/scc/{scc}', [\App\Http\Controllers\Admin\TitheController::class, 'sccMembers'])->name('tithes.scc.members');
+        Route::get('/member/profile/{member}', [MemberController::class, 'profile'])->name('members.profile');
+        Route::post('/tithes', [\App\Http\Controllers\Admin\TitheController::class, 'store'])->name('tithes.store');
+        Route::get('/tithes/{tithe}/receipt', [\App\Http\Controllers\Admin\TitheController::class, 'receipt'])->name('tithes.receipt');
+
+        //USERs
+        // Route::get('/', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('users.index');
+        // Route::get('/create', [\App\Http\Controllers\Admin\UserController::class, 'create'])->name('users.create');
+        // Route::post('/', [\App\Http\Controllers\Admin\UserController::class, 'store'])->name('users.store');
+        // Route::get('/{user}/edit', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('users.edit');
+        // Route::put('/{user}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('users.update');
+        // Route::delete('/{user}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('users.destroy');
+        Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
+        Route::put('/{user}/toggle', [\App\Http\Controllers\Admin\UserController::class, 'toggleStatus'])->name('users.toggle');
+        Route::put('/{user}/reset-password', [\App\Http\Controllers\Admin\UserController::class, 'resetPassword'])->name('vreset');
+
+
+        //ROLES
+        // Route::get('/', [\App\Http\Controllers\Admin\RoleController::class, 'index'])->name('roles.index');
+        // Route::get('/create', [\App\Http\Controllers\Admin\RoleController::class, 'create'])->name('roles.create');
+        // Route::post('/', [\App\Http\Controllers\Admin\RoleController::class, 'store'])->name('roles.store');
+        // Route::get('/{role}/edit', [\App\Http\Controllers\Admin\RoleController::class, 'edit'])->name('roles.edit');
+        // Route::put('/{role}', [\App\Http\Controllers\Admin\RoleController::class, 'update'])->name('roles.update');
+        // Route::delete('/{role}', [\App\Http\Controllers\Admin\RoleController::class, 'destroy'])->name('roles.destroy');
+        Route::resource('roles', \App\Http\Controllers\Admin\RoleController::class);
+        Route::get('/assign', [\App\Http\Controllers\Admin\RoleController::class, 'assignForm'])->name('roles.assign_form');
+        Route::post('/assign', [\App\Http\Controllers\Admin\RoleController::class, 'assign'])->name('roles.assign');
     });
 
 // ---------------------------------------------------------------
@@ -142,14 +182,13 @@ Route::middleware(['auth', 'role:scc_leader'])
     ->prefix('leader')
     ->name('leader.')
     ->group(function () {
-
         Route::get('/dashboard', [LeaderDashboardController::class, 'index'])->name('dashboard');
 
         // TITHES
         Route::get('/tithes', [\App\Http\Controllers\Leader\TitheController::class, 'index'])->name('tithes.index');
         Route::get('/tithes/create', [\App\Http\Controllers\Leader\TitheController::class, 'create'])->name('tithes.create');
         Route::get('/tithes/scc_member/{member}', [\App\Http\Controllers\Leader\TitheController::class, 'sccMember'])->name('tithes.scc_member');
-        Route::get('/member/profile/{member}', [MemberController::class, 'profile'])->name('members.profile');
+        Route::get('/member/profile/{member}', [\App\Http\Controllers\Leader\MemberController::class, 'profile'])->name('members.profile');
         Route::post('/tithes', [\App\Http\Controllers\Leader\TitheController::class, 'store'])->name('tithes.store');
         Route::get('/tithes/{tithe}/edit', [\App\Http\Controllers\Leader\TitheController::class, 'edit'])->name('tithes.edit');
         Route::put('/tithes/{tithe}', [\App\Http\Controllers\Leader\TitheController::class, 'update'])->name('tithes.update');

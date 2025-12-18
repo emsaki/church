@@ -49,9 +49,14 @@ class User extends Authenticatable
         ];
     }
 
+    // public function roles()
+    // {
+    //     return $this->belongsToMany(Role::class);
+    // }
+
     public function roles()
     {
-        return $this->belongsToMany(Role::class);
+        return $this->belongsToMany(Role::class, 'role_user');
     }
 
     public function hasRole($role)
@@ -83,6 +88,21 @@ class User extends Authenticatable
     public function leaderScc()
     {
         return $this->hasOne(\App\Models\SmallCommunityLeader::class, 'user_id');
+    }
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isPriest()
+    {
+        return $this->role === 'priest';
+    }
+
+    public function isSccLeader()
+    {
+        return $this->role === 'scc_leader';
     }
 
 }

@@ -1,70 +1,98 @@
 @extends('adminlte::page')
 
-@section('title', 'All Tithes')
+@section('title', 'Tithe Collections by SCC')
 
 @section('content_header')
-    <h1 class="font-weight-bold text-primary">
-        <i class="fas fa-hand-holding-usd"></i> All Tithes
-    </h1>
+    <h1 class="font-weight-bold">Small Community Tithes Summary</h1>
 @stop
 
 @section('content')
 
-<div class="card shadow">
+<div class="card shadow-sm">
+    <div class="card-body">
 
-    <div class="card-header bg-primary text-white">
-        <h3 class="card-title mb-0">
-            <i class="fas fa-list"></i> Tithe Records
-        </h3>
-    </div>
+        <!-- FILTERS -->
+        <form class="row mb-3">
+            <div class="col-md-3">
+                <label>Parish</label>
+                <select name="parish_id" class="form-control" onchange="this.form.submit()">
+                    <option value="">-- All Parishes --</option>
+                    @foreach($parishes as $parish)
+                        <option value="{{ $parish->id }}" {{ request('parish_id') == $parish->id ? 'selected' : '' }}>
+                            {{ $parish->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
 
-    <div class="card-body p-0">
-        <table class="table table-striped table-bordered mb-0">
-            <thead class="bg-light">
+            <div class="col-md-3">
+                <label>SCC</label>
+                <select name="community_id" class="form-control" onchange="this.form.submit()">
+                    <option value="">-- All SCCs --</option>
+                    @foreach($communities as $c)
+                        <option value="{{ $c->id }}" {{ request('community_id') == $c->id ? 'selected' : '' }}>
+                            {{ $c->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <label>From</label>
+                <input type="date" name="start_date" class="form-control" value="{{ request('start_date') }}">
+            </div>
+
+            <div class="col-md-2">
+                <label>To</label>
+                <input type="date" name="end_date" class="form-control" value="{{ request('end_date') }}">
+            </div>
+
+            <div class="col-md-2 mt-4">
+                <button class="btn btn-primary btn-block">
+                    <i class="fas fa-search"></i> Filter
+                </button>
+            </div>
+        </form>
+
+        <!-- TOTAL SUM -->
+        <div class="alert alert-info">
+            <strong>Total Tithes:</strong> {{ number_format($totalAmount, 2) }} Tsh
+        </div>
+
+        <!-- SCC LIST TABLE -->
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
                 <tr>
-                    <th>Member</th>
+                    <th>SCC Name</th>
                     <th>Parish</th>
-                    <th>SCC</th>
-                    <th>Amount</th>
-                    <th>Date</th>
-                    <th>Recorded By</th>
+                    <th>Members</th>
+                    <th>Total Contributions</th>
                     <th>Actions</th>
                 </tr>
             </thead>
 
             <tbody>
-            @foreach($tithes as $t)
+                @foreach($sccs as $scc)
                 <tr>
-                    <td>{{ $t->member?->full_name }}</td>
-                    <td>{{ $t->parish?->name }}</td>
-                    <td>{{ $t->community?->name }}</td>
-                    <td><strong>{{ number_format($t->amount) }}</strong></td>
-                    <td>{{ $t->tithe_date }}</td>
-                    <td>{{ $t->recorder?->name }}</td>
-
+                    <td>{{ $scc->name }}</td>
+                    <td>{{ $scc->parish->name ?? '-' }}</td>
+                    <td>{{ $scc->members_count }}</td>
+                    <td><strong>{{ number_format($scc->tithes_sum_amount, 2) }}</strong></td>
                     <td>
-                        <a href="{{ route('admin.tithes.edit', $t) }}" class="btn btn-sm btn-info">
-                            <i class="fas fa-edit"></i>
+                        <a href="{{ route('admin.tithes.scc.members', $scc->id) }}"
+                           class="btn btn-sm btn-info">
+                            <i class="fas fa-folder-open"></i> Open SCC
                         </a>
-
-                        <form action="{{ route('admin.tithes.destroy', $t) }}"
-                              method="POST" style="display:inline-block">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-sm btn-danger"
-                                    onclick="return confirm('Delete this tithe?')">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </form>
                     </td>
-
                 </tr>
-            @endforeach
+                @endforeach
             </tbody>
 
         </table>
-    </div>
 
+        {{ $sccs->links() }}
+
+    </div>
 </div>
 
 @stop

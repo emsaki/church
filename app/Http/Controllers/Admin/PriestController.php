@@ -20,21 +20,6 @@ class PriestController extends Controller
         return view('admin.priests.create');
     }
 
-    // public function store(Request $request)
-    // {
-    //     $request->validate([
-    //         'first_name' => 'required|string|max:255',
-    //         'last_name'  => 'required|string|max:255',
-    //         'email'      => 'nullable|email|unique:priests',
-    //     ]);
-
-    //     Priest::create($request->all());
-
-    //     return redirect()
-    //         ->route('admin.priests.index')
-    //         ->with('success', 'Priest registered successfully.');
-    // }
-
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -56,6 +41,7 @@ class PriestController extends Controller
             'name'     => $fullName,
             'email'    => $validated['email'],
             'phone'    => $validated['phone'],
+            'role'     => 'priest',
             'password' => bcrypt('password123'),
         ]);
 

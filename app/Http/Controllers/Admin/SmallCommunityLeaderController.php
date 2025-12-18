@@ -30,33 +30,29 @@ class SmallCommunityLeaderController extends Controller
             'position_id' => 'required|exists:positions,id',
         ]);
 
-        // 1️⃣ Find Member
         $member = Member::findOrFail($validated['member_id']);
-
-        // 2️⃣ Does this member have a user account already?
         $user = \App\Models\User::where('email', $member->email)->first();
-
         if (!$user) {
-            // 3️⃣ Create user account automatically
             $user = \App\Models\User::create([
                 'name' => $member->first_name . ' ' . $member->last_name,
                 'email' => $member->email ?? ('leader'.$member->id.'@auto.local'),
                 'phone' => $member->phone,
-                'password' => bcrypt('password123'), // temp password
+                'role' => 'scc_leader',
+                'password' => bcrypt('password123'),
             ]);
         }
 
-        // 4️⃣ Assign SCC Leader role
         if (!$user->hasRole('scc_leader')) {
             $user->assignRole('scc_leader');
         }
 
-        // 5️⃣ Save leader assignment
         SmallCommunityLeader::updateOrCreate(
-            ['small_community_id' => $community->id],
             [
+                'small_community_id' => $community->id,
                 'member_id' => $member->id,
                 'user_id'   => $user->id,
+            ],
+            [
                 'position_id' => $validated['position_id'],
             ]
         );

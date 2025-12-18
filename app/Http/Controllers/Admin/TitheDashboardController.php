@@ -16,7 +16,7 @@ class TitheDashboardController extends Controller
 
         // MONTHLY TREND (last 12 months)
         $monthlyTrend = Tithe::select(
-                DB::raw("DATE_FORMAT(tithe_date, '%Y-%m') AS month"),
+                DB::raw("TO_CHAR(tithe_date, 'YYYY-MM') AS month"),
                 DB::raw("SUM(amount) AS total")
             )
             ->groupBy('month')

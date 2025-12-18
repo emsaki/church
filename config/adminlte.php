@@ -332,6 +332,28 @@ return [
             'icon' => 'fas fa-user-friends',
             'can'  => 'is-admin',
         ],
+        [
+            'text' => 'Tithes',
+            'icon' => 'fas fa-donate',
+            'can'  => 'is-admin',
+            'submenu' => [
+                [
+                    'text' => 'Dashboard',
+                    'route' => 'admin.tithes.dashboard',
+                    'icon'  => 'fas fa-chart-line',
+                ],
+                [
+                    'text' => 'SCC List',
+                    'route' => 'admin.tithes.index',
+                    'icon'  => 'fas fa-users',
+                ],
+                [
+                    'text' => 'Parish Summary',
+                    'route' => 'admin.tithes.index',
+                    'icon'  => 'fas fa-church',
+                ],
+            ],
+        ],
 
         [
             'text' => 'Small Communities',
@@ -356,6 +378,12 @@ return [
         [
             'text' => 'User Roles',
             'route' => 'admin.roles.index',
+            'icon'  => 'fas fa-user-shield',
+            'can'   => 'is-admin',
+        ],
+        [
+            'text' => 'User Management',
+            'route' => 'admin.users.index',
             'icon'  => 'fas fa-user-shield',
             'can'   => 'is-admin',
         ],
@@ -410,22 +438,25 @@ return [
         [
             'text' => 'Tithes',
             'icon' => 'fas fa-donate',
-            'can'  => 'scc_leader',
+            'can'  => 'is-scc-leader',
             'submenu' => [
                 [
                     'text' => 'Dashboard',
                     'route'  => 'leader.tithes.dashboard',
                     'icon' => 'fas fa-chart-line',
+                    'can'  => 'is-scc-leader',
                 ],
                 [
                     'text' => 'Record Tithe',
                     'route'  => 'leader.tithes.create',
                     'icon' => 'fas fa-hand-holding-usd',
+                    'can'  => 'is-scc-leader',
                 ],
                 [
                     'text' => 'All Records',
                     'route'  => 'leader.tithes.index',
                     'icon' => 'fas fa-list',
+                    'can'  => 'is-scc-leader',
                 ],
             ],
         ],

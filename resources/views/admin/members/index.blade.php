@@ -113,29 +113,29 @@
                         @endif
                     </td>
                     <td class="text-right">
-                        <a href="{{ route('leader.tithes.create', $member) }}" 
+                        <a href="{{ route('admin.tithes.create', $member) }}" 
                         class="btn btn-sm btn-success" title="Record Tithe">
                             <i class="fas fa-coins"></i>
                         </a>
 
-                        <a href="{{ route('leader.tithes.scc_member', $member->id) }}"
+                        <a href="{{ route('admin.tithes.scc_member', $member->id) }}"
                         class="btn btn-sm btn-info">
                             <i class="fas fa-list"></i>
                         </a>
 
-                        <a href="{{ route('leader.tithes.receipt', $member) }}" 
+                        <a href="{{ route('admin.tithes.receipt', $member) }}" 
                         class="btn btn-sm btn-info">
                             <i class="fas fa-file-pdf"></i>
                         </a>
 
                         {{-- EDIT --}}
-                        <a href="{{ route('leader.members.edit', $member) }}"
+                        <a href="{{ route('admin.members.edit', $member) }}"
                            class="btn btn-sm btn-warning mr-1">
                             <i class="fas fa-edit"></i>
                         </a>
 
                         {{-- PROFILE --}}
-                        <a href="{{ route('leader.members.profile', $member) }}"
+                        <a href="{{ route('admin.members.profile', $member) }}"
                             class="btn btn-sm btn-info text-white mr-1">
                             <i class="fas fa-id-card"></i>
                         </a>

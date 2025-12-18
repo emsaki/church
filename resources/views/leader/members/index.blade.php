@@ -12,7 +12,7 @@
 
 {{-- ADD MEMBER BUTTON --}}
 <div class="mb-3 text-right">
-    <a href="{{ route('admin.members.create') }}" class="btn btn-primary">
+    <a href="{{ route('leader.members.create') }}" class="btn btn-primary">
         <i class="fas fa-plus-circle"></i> Add Member
     </a>
 </div>
@@ -141,7 +141,7 @@
                         </a>
 
                         {{-- DELETE --}}
-                        <form action="{{ route('admin.members.destroy', $member) }}"
+                        <form action="{{ route('leader.members.destroy', $member) }}"
                               method="POST" class="d-inline"
                               onsubmit="return confirm('Delete this member?')">
                             @csrf
