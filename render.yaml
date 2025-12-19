@@ -1,0 +1,84 @@
+services:
+  # -----------------------------
+  # Web Service
+  # -----------------------------
+  - type: web
+    name: pmis-web
+    env: docker
+    plan: free
+    buildCommand: ""
+    startCommand: ""
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_KEY
+        sync: false
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: pmis-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: pmis-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: pmis-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: pmis-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: pmis-db
+          property: password
+      - key: PORT
+        value: 8000
+
+  # -----------------------------
+  # Queue Worker
+  # -----------------------------
+  - type: worker
+    name: pmis-worker
+    env: docker
+    plan: free
+    buildCommand: ""
+    startCommand: php artisan queue:work --verbose --tries=3 --timeout=90
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: PORT
+        value: 8000
+      - key: QUEUE_CONNECTION
+        value: database
+      - key: DB_HOST
+        fromDatabase:
+          name: pmis-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: pmis-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: pmis-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: pmis-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: pmis-db
+          property: password
+
+databases:
+  - name: pmis-db
+    plan: free
+    databaseName: pmis
+    user: pmis_user
