@@ -82,7 +82,7 @@
 
         /* LEFT IMAGE AREA */
         .left-side {
-            width: 50%;
+            width: 62%;
             background: url("/images/pmis.png") center/cover no-repeat;
             position: relative;
             display: flex;
@@ -92,7 +92,7 @@
 
         /* RIGHT SIDE LOGIN */
         .right-side {
-            width: 50%;
+            width: 38%;
             padding: 45px 55px;
             text-align: center;
             display: flex;
