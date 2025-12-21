@@ -39,6 +39,14 @@ class BaptismController extends Controller
                 'notes'     => 'nullable|string'
             ]);
 
+            $member = Member::find($validated['member_id']);
+            if ($member->is_baptised) {
+                return back()->withErrors([
+                    'member_id' => 'This member is already baptised and cannot submit a new request.'
+                ]);
+            }
+
+
             BaptismRecord::create([
                 'member_id'    => $validated['member_id'],
                 'submitted_by' => auth()->id(),
@@ -55,6 +63,29 @@ class BaptismController extends Controller
                 'mother_name' => 'nullable|string',
                 'notes'       => 'nullable|string',
             ]);
+
+            $fullName = strtolower(trim($validated['full_name']));
+            $existingMember = Member::whereRaw("LOWER(CONCAT(first_name, ' ', COALESCE(middle_name,''), ' ', last_name)) = ?", [$fullName])
+                ->where('dob', $validated['dob'])
+                ->where('is_baptised', true)
+                ->first();
+
+            if ($existingMember) {
+                return back()->withErrors([
+                    'full_name' => 'This person already exists as a baptised member.'
+                ]);
+            }
+
+            $existingRecord = BaptismRecord::whereRaw("LOWER(full_name) = ?", [$fullName])
+                ->where('dob', $validated['dob'])
+                ->whereIn('status', ['approved', 'pending'])
+                ->first();
+
+            if ($existingRecord) {
+                return back()->withErrors([
+                    'full_name' => 'A previous baptism request for this person is already submitted.'
+                ]);
+            }
 
             BaptismRecord::create([
                 'full_name'   => $validated['full_name'],

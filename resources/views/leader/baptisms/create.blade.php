@@ -11,7 +11,15 @@
 @section('content')
 
 <div class="card shadow-lg">
-
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $err)
+                    <li>{{ $err }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     {{-- CARD HEADER --}}
     <div class="card-header bg-primary text-white">
         <h3 class="card-title mb-0">
