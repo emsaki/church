@@ -332,6 +332,20 @@ return [
             'icon' => 'fas fa-user-friends',
             'can'  => 'is-admin',
         ],
+
+        [
+            'text' => 'Baptisms',
+            'icon' => 'fas fa-users',
+            'can'  => 'is-admin',
+            'submenu' => [
+                [
+                    'text' => 'Baptism Records',
+                    'route' => 'admin.baptisms.records',
+                    'icon' => 'fas fa-baby',
+                    'can'  => 'is-admin',
+                ],
+            ],
+        ],
         [
             'text' => 'Tithes',
             'icon' => 'fas fa-donate',
@@ -412,10 +426,23 @@ return [
         ],
 
         [
-            'text' => 'Baptism Requests',
-            'route' => 'priest.baptisms.index',
-            'icon'  => 'fas fa-baby',
-            'can'   => 'is-priest',
+            'text' => 'Baptisms',
+            'icon' => 'fas fa-users',
+            'can'  => 'is-priest',
+            'submenu' => [
+                [
+                    'text' => 'Baptism Requests',
+                    'route' => 'priest.baptisms.index',
+                    'icon'  => 'fas fa-baby',
+                    'can'   => 'is-priest',
+                ],
+                [
+                    'text' => 'Baptism Records',
+                    'route' => 'priest.baptisms.records',
+                    'icon'  => 'fas fa-baby',
+                    'can'   => 'is-priest',
+                ],
+            ],
         ],
 
         // ============================

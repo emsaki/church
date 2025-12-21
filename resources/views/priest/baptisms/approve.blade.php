@@ -40,46 +40,13 @@
             <div class="row">
 
                 {{-- STATUS --}}
-                <div class="col-md-6 mb-3">
+                <div class="col-md-12 mb-3">
                     <label class="font-weight-bold">
                         <i class="fas fa-info-circle"></i> Approval Status
                     </label>
                     <select name="status" class="form-control" required>
                         <option value="approved">Approve</option>
                         <option value="rejected">Reject</option>
-                    </select>
-                </div>
-
-                {{-- CERTIFICATE NUMBER --}}
-                <div class="col-md-6 mb-3">
-                    <label class="font-weight-bold">
-                        <i class="fas fa-file-alt"></i> Certificate Number
-                    </label>
-                    <input type="text" name="certificate_number" class="form-control"
-                           placeholder="Enter certificate number">
-                </div>
-
-            </div>
-
-            <div class="row">
-
-                {{-- BAPTISM DATE --}}
-                <div class="col-md-6 mb-3">
-                    <label class="font-weight-bold">
-                        <i class="fas fa-calendar-alt"></i> Baptism Date
-                    </label>
-                    <input type="date" name="baptism_date" class="form-control">
-                </div>
-
-                {{-- PARISH --}}
-                <div class="col-md-6 mb-3">
-                    <label class="font-weight-bold">
-                        <i class="fas fa-church"></i> Baptism Parish
-                    </label>
-                    <select name="parish_id" class="form-control" required>
-                        @foreach($parishes as $parish)
-                            <option value="{{ $parish->id }}">{{ $parish->name }}</option>
-                        @endforeach
                     </select>
                 </div>
 

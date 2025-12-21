@@ -76,16 +76,69 @@
             {{-- Approve Button --}}
             @if($record->status === 'pending')
                 <div class="text-right">
-                    <a href="{{ route('priest.baptisms.approve', $record->id) }}"
-                       class="btn btn-success btn-lg">
-                        <i class="fas fa-check-circle"></i> Approve Baptism
-                    </a>
+                    <button class="btn btn-success btn-lg" data-toggle="modal" data-target="#approvalModal">
+                        <i class="fas fa-check-circle"></i> Approve / Reject
+                    </button>
                 </div>
             @endif
-
         </div>
     </div>
 
+</div>
+
+{{-- Approval Modal --}}
+<div class="modal fade" id="approvalModal" tabindex="-1" aria-labelledby="approvalModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            {{-- Modal Header --}}
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="approvalModalLabel">
+                    <i class="fas fa-check-circle"></i> Approve Baptism Request
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+            </div>
+
+            {{-- Modal Body --}}
+            <form method="POST" action="{{ route('priest.baptisms.approve', $record->id) }}">
+                @csrf
+                @method('PUT')
+
+                <div class="modal-body">
+
+                    {{-- Approval Status --}}
+                    <div class="form-group">
+                        <label class="font-weight-bold">Approval Status</label>
+                        <select name="approval_status" class="form-control" required>
+                            <option value="">Select…</option>
+                            <option value="approved">Approve</option>
+                            <option value="rejected">Reject</option>
+                        </select>
+                    </div>
+
+                    {{-- Notes --}}
+                    <div class="form-group">
+                        <label class="font-weight-bold">Notes (Optional)</label>
+                        <textarea name="notes" class="form-control" rows="3" placeholder="Add remarks…"></textarea>
+                    </div>
+
+                </div>
+
+                {{-- Modal Footer --}}
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        Cancel
+                    </button>
+
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-check"></i> Submit Approval
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
 </div>
 
 @endsection

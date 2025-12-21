@@ -109,13 +109,17 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('/tithes/dashboard', [App\Http\Controllers\Admin\TitheDashboardController::class, 'index'])->name('tithes.dashboard');
         Route::put('/tithes/{tithe}/verify', [App\Http\Controllers\Admin\TitheController::class, 'verify'])->name('tithes.verify');
 
-           // TITHES
+        // TITHES
         Route::get('/tithes/create', [\App\Http\Controllers\Admin\TitheController::class, 'create'])->name('tithes.create');
         Route::get('/tithes/scc_member/{member}', [\App\Http\Controllers\Admin\TitheController::class, 'sccMember'])->name('tithes.scc_member');
         Route::get('/tithes/scc/{scc}', [\App\Http\Controllers\Admin\TitheController::class, 'sccMembers'])->name('tithes.scc.members');
         Route::get('/member/profile/{member}', [MemberController::class, 'profile'])->name('members.profile');
         Route::post('/tithes', [\App\Http\Controllers\Admin\TitheController::class, 'store'])->name('tithes.store');
         Route::get('/tithes/{tithe}/receipt', [\App\Http\Controllers\Admin\TitheController::class, 'receipt'])->name('tithes.receipt');
+
+        Route::get('/baptisms/records', [\App\Http\Controllers\Admin\BaptismController::class, 'getRecords'])->name('baptisms.records');
+        Route::get('/baptisms/records/{record}/edit', [\App\Http\Controllers\Admin\BaptismController::class, 'editRecord'])->name('baptisms.records.edit');
+        Route::put('/baptisms/records/{record}', [\App\Http\Controllers\Admin\BaptismController::class, 'updateRecord'])->name('baptisms.records.update');
 
         //USERs
         // Route::get('/', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('users.index');
@@ -127,7 +131,6 @@ Route::middleware(['auth', 'role:admin'])
         Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
         Route::put('/{user}/toggle', [\App\Http\Controllers\Admin\UserController::class, 'toggleStatus'])->name('users.toggle');
         Route::put('/{user}/reset-password', [\App\Http\Controllers\Admin\UserController::class, 'resetPassword'])->name('vreset');
-
 
         //ROLES
         // Route::get('/', [\App\Http\Controllers\Admin\RoleController::class, 'index'])->name('roles.index');
@@ -163,6 +166,10 @@ Route::middleware(['auth', 'role:priest'])
             ]);
         })->name('dashboard');
         // Baptisms (Priest)
+        Route::get('/baptisms/records', [\App\Http\Controllers\Priest\BaptismController::class, 'getRecords'])->name('baptisms.records');
+        Route::get('/baptisms/records/{record}/edit', [\App\Http\Controllers\Priest\BaptismController::class, 'editRecord'])->name('baptisms.records.edit');
+        Route::put('/baptisms/records/{record}', [\App\Http\Controllers\Priest\BaptismController::class, 'updateRecord'])->name('baptisms.records.update');
+        
         Route::get('/baptisms', [\App\Http\Controllers\Priest\BaptismController::class, 'index'])->name('baptisms.index');
         Route::get('/baptisms/{record}', [\App\Http\Controllers\Priest\BaptismController::class, 'show'])->name('baptisms.show');
         Route::get('/baptisms/{record}/approve', [\App\Http\Controllers\Priest\BaptismController::class, 'approveForm'])->name('baptisms.approve');

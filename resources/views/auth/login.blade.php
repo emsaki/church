@@ -169,7 +169,23 @@
             box-shadow: 0 4px 12px rgba(39, 68, 168, 0.35);
             transform: translateY(-2px);
         }
-
+        .login-form-group {
+            width: 100%;
+            max-width: 350px;
+            margin: 0 auto;
+        }
+        .login-form-group input {
+            height: 45px;
+            font-size: 15px;
+            padding-left: 12px;
+        }
+        .login-form-group .login-btn {
+            width: 100%;
+            height: 45px;
+            margin-top: 10px;
+            font-size: 16px;
+            font-weight: bold;
+        }
         .footer-text {
             font-size: 11px;
             color: #555;
