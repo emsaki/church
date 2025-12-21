@@ -113,10 +113,10 @@
                         @endif
                     </td>
                     <td class="text-right">
-                        <a href="{{ route('admin.tithes.create', $member) }}" 
+                        {{-- <a href="{{ route('admin.tithes.create', $member) }}" 
                         class="btn btn-sm btn-success" title="Record Tithe">
                             <i class="fas fa-coins"></i>
-                        </a>
+                        </a> --}}
 
                         <a href="{{ route('admin.tithes.scc_member', $member->id) }}"
                         class="btn btn-sm btn-info">
