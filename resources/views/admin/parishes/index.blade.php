@@ -50,9 +50,22 @@
                         <td class="align-middle">{{ $parish->name }}</td>
 
                         <td class="align-middle">
-                            {{ $parish->priest?->full_name ?? '— Not Assigned —' }}
-                        </td>
+                            {{-- {{ $parish->priest?->full_name ?? '— Not Assigned —' }} --}}
+                        
+                            @php
+                            $activePriests = $parish->activePriests;
+                            @endphp
 
+                            @if($activePriests->count())
+                                @foreach($activePriests as $priest)
+                                    <span class="badge badge-info mb-1">
+                                        {{ $priest->full_name }}
+                                    </span><br>
+                                @endforeach
+                            @else
+                                <span class="text-muted">— No Active Priest —</span>
+                            @endif
+                        </td>
                         <td class="align-middle">{{ $parish->email }}</td>
                         <td class="align-middle">{{ $parish->phone }}</td>
                         <td class="align-middle">{{ $parish->location }}</td>

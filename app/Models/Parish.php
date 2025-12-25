@@ -19,9 +19,19 @@ class Parish extends Model
         return $this->hasMany(ParishPriestHistory::class);
     }
 
-    public function priest()
+    public function priests()
     {
-        return $this->belongsTo(Priest::class, 'priest_id');
+        return $this->belongsToMany(Priest::class, 'parish_priest_history')
+            ->withPivot(['assigned_from', 'assigned_to'])
+            ->withTimestamps();
+    }
+
+    public function activePriests()
+    {
+        return $this->belongsToMany(Priest::class, 'parish_priest_history')
+            ->wherePivotNull('assigned_to')
+            ->withPivot(['assigned_from'])
+            ->withTimestamps();
     }
 
     public function tithes()

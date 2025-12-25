@@ -142,6 +142,15 @@ Route::middleware(['auth', 'role:admin'])
         Route::resource('roles', \App\Http\Controllers\Admin\RoleController::class);
         Route::get('/assign', [\App\Http\Controllers\Admin\RoleController::class, 'assignForm'])->name('roles.assign_form');
         Route::post('/assign', [\App\Http\Controllers\Admin\RoleController::class, 'assign'])->name('roles.assign');
+
+        Route::post('/priests/{priest}/toggle', [\App\Http\Controllers\Admin\PriestController::class, 'toggleStatus'])->name('priests.toggle');
+        Route::get('/priests/{priest}/assign', [\App\Http\Controllers\Admin\PriestController::class, 'assignForm'])->name('priests.assign.form');
+        Route::post('/priests/{priest}/assign', [\App\Http\Controllers\Admin\PriestController::class, 'assign'])->name('priests.assign');
+        Route::post('/priests/{priest}/remove-assignment/{history}', [\App\Http\Controllers\Admin\PriestController::class, 'removeAssignment'])->name('priests.remove.assignment');
+        Route::post('/priests/{priest}/reset-password', [\App\Http\Controllers\Admin\PriestController::class, 'resetPassword'])->name('priests.reset.password');
+        Route::get('/parishes/{parish}/assign', [ParishController::class, 'assign'])->name('parishes.assign');
+        Route::post('/parishes/{parish}/assign', [ParishController::class, 'storeAssignment'])->name('parishes.assign.store');
+        Route::delete('/parishes/{parish}/unassign/{priest}', [ParishController::class, 'unassign'])->name('parishes.unassign');
     });
 
 // ---------------------------------------------------------------

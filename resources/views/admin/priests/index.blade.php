@@ -61,25 +61,29 @@
                     </td>
 
                     <td class="text-right align-middle">
-
-                        {{-- EDIT BUTTON --}}
-                        <a href="{{ route('admin.priests.edit', $priest) }}"
-                           class="btn btn-sm btn-warning">
-                            <i class="fas fa-edit"></i> Edit
+                        {{-- View --}}
+                        <a href="{{ route('admin.priests.show', $priest) }}" class="btn btn-sm btn-info">
+                            <i class="fas fa-eye"></i>
                         </a>
 
-                        {{-- DELETE BUTTON --}}
-                        <form action="{{ route('admin.priests.destroy', $priest) }}"
-                              method="POST" class="d-inline"
-                              onsubmit="return confirm('Delete this priest?');">
-                            @csrf
-                            @method('DELETE')
+                        {{-- Edit --}}
+                        <a href="{{ route('admin.priests.edit', $priest) }}" class="btn btn-sm btn-warning">
+                            <i class="fas fa-edit"></i>
+                        </a>
 
-                            <button class="btn btn-sm btn-danger">
-                                <i class="fas fa-trash"></i> Delete
+                        {{-- Manage Assignments --}}
+                        <a href="{{ route('admin.priests.assign.form', $priest->id) }}"
+                        class="btn btn-sm btn-primary">
+                            <i class="fas fa-random"></i> Manage Assignments
+                        </a>
+
+                        {{-- Toggle Active --}}
+                        <form action="{{ route('admin.priests.toggle', $priest->id) }}" method="POST" class="d-inline">
+                            @csrf
+                            <button class="btn btn-sm btn-secondary">
+                                <i class="fas fa-toggle-on"></i>
                             </button>
                         </form>
-
                     </td>
                 </tr>
 

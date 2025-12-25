@@ -30,7 +30,6 @@
                         <strong>Please fix the errors below:</strong>
                     </div>
                 @endif
-
                 <form method="POST" action="{{ route('admin.parishes.update', $parish) }}">
                     @csrf
                     @method('PUT')

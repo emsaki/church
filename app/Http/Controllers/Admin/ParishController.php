@@ -18,28 +18,22 @@ class ParishController extends Controller
 
     public function create()
     {
-        $priests = Priest::where('active', true)->get();
-        return view('admin.parishes.create', compact('priests'));
+        return view('admin.parishes.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'priest_id' => 'nullable|exists:priests,id',
+            'name'     => 'required|string|max:255',
+            'email'    => 'nullable|email',
+            'phone'    => 'nullable|string|max:50',
+            'location' => 'nullable|string|max:255',
         ]);
 
-        $parish = Parish::create($request->all());
+        Parish::create($request->only(['name', 'email', 'phone', 'location']));
 
-        if ($request->priest_id) {
-            ParishPriestHistory::create([
-                'parish_id' => $parish->id,
-                'priest_id' => $request->priest_id,
-                'assigned_from' => now(),
-            ]);
-        }
-
-        return redirect()->route('admin.parishes.index')
+        return redirect()
+            ->route('admin.parishes.index')
             ->with('success', 'Parish created successfully.');
     }
 
@@ -51,39 +45,39 @@ class ParishController extends Controller
 
     public function edit(Parish $parish)
     {
-        $priests = \App\Models\Priest::orderBy('first_name')->get();
+        $priests = Priest::orderBy('id')->get();
         return view('admin.parishes.edit', compact('parish', 'priests'));
     }
 
     public function update(Request $request, Parish $parish)
     {
-        $request->validate([
-            'name' => 'required',
+        $validated = $request->validate([
+            'name' => 'required|string',
+            'email' => 'nullable|email',
+            'phone' => 'nullable|string',
+            'location' => 'nullable|string',
             'priest_id' => 'nullable|exists:priests,id',
         ]);
 
-        // If priest has changed
-        if ($parish->priest_id != $request->priest_id) {
+        // Handle assignment history
+        if ($parish->priest_id != $validated['priest_id']) {
 
-            // Close old assignment
-            if ($parish->priest_id) {
-                ParishPriestHistory::where('parish_id', $parish->id)
-                    ->whereNull('assigned_to')
-                    ->update(['assigned_to' => now()]);
-            }
+            // Close previous assignment
+            ParishPriestHistory::where('parish_id', $parish->id)
+                ->whereNull('assigned_to')
+                ->update(['assigned_to' => now()]);
 
-            // Start new assignment
-            if ($request->priest_id) {
+            // Add new assignment
+            if ($validated['priest_id']) {
                 ParishPriestHistory::create([
                     'parish_id' => $parish->id,
-                    'priest_id' => $request->priest_id,
+                    'priest_id' => $validated['priest_id'],
                     'assigned_from' => now(),
                 ]);
             }
         }
 
-        // Update parish table
-        $parish->update($request->all());
+        $parish->update($validated);
 
         return redirect()->route('admin.parishes.index')
             ->with('success', 'Parish updated successfully.');
@@ -96,4 +90,45 @@ class ParishController extends Controller
         return redirect()->route('admin.parishes.index')
             ->with('success', 'Parish deleted.');
     }
+
+    public function assign(Parish $parish)
+    {
+        $priests = Priest::orderBy('id')->get();
+        $activePriests = $parish->activePriests;
+        $history = $parish->priestHistory()->with('priest')->get();
+        return view('admin.parishes.assign', compact(
+            'parish', 'priests', 'activePriests', 'history'
+        ));
+    }
+
+    public function storeAssignment(Request $request, Parish $parish)
+    {
+        $request->validate([
+            'priest_id' => 'required|exists:priests,id'
+        ]);
+
+        // Close existing active assignments
+        ParishPriestHistory::where('parish_id', $parish->id)
+            ->whereNull('assigned_to')
+            ->update(['assigned_to' => now()]);
+
+        // Add new assignment
+        ParishPriestHistory::create([
+            'parish_id' => $parish->id,
+            'priest_id' => $request->priest_id,
+            'assigned_from' => now(),
+        ]);
+        return back()->with('success', 'Priest assigned successfully.');
+    }
+
+    public function unassign($parishId, $priestId)
+    {
+        ParishPriestHistory::where('parish_id', $parishId)
+            ->where('priest_id', $priestId)
+            ->whereNull('assigned_to')
+            ->update(['assigned_to' => now()]);
+
+        return back()->with('success', 'Priest unassigned from parish.');
+    }
+
 }

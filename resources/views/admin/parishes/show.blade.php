@@ -24,7 +24,20 @@
 
             <div class="card-body">
                 <h4 class="mb-1">
-                    {{ $parish->priest?->full_name ?? 'No priest assigned' }}
+                    {{-- {{ $parish->priest?->full_name ?? '— Not Assigned —' }} --}}
+                    @php
+                    $activePriests = $parish->activePriests;
+                    @endphp
+
+                    @if($activePriests->count())
+                        @foreach($activePriests as $priest)
+                            <span class="badge badge-info mb-1">
+                                {{ $priest->full_name }}
+                            </span><br>
+                        @endforeach
+                    @else
+                        <span class="text-muted">— No Active Priest —</span>
+                    @endif
                 </h4>
 
                 <p class="text-muted mb-0">

@@ -16,7 +16,19 @@
             @method('PUT')
             @include('admin.priests.form')
 
-            <button class="btn btn-primary">Update</button>
+            {{-- Action Buttons --}}
+                    <div class="text-right mt-4">
+
+                        <a href="{{ route('admin.priests.index') }}"
+                           class="btn btn-secondary mr-2">
+                            <i class="fas fa-arrow-left"></i> Cancel
+                        </a>
+
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save"></i> Update Priest
+                        </button>
+
+                    </div>
         </form>
 
     </div>

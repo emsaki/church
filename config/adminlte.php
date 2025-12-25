@@ -313,19 +313,18 @@ return [
         //        ADMIN ONLY
         // ============================
         [
-            'text' => 'Priests',
-            'route' => 'admin.priests.index',
-            'icon' => 'fas fa-user-tie',
-            'can'   => 'is-admin',
-        ],
-
-        [
             'text' => 'Parishes',
             'route' => 'admin.parishes.index',
             'icon'  => 'fas fa-church',
             'can'   => 'is-admin',
         ],
-
+        
+        [
+            'text' => 'Priests',
+            'route' => 'admin.priests.index',
+            'icon' => 'fas fa-user-tie',
+            'can'   => 'is-admin',
+        ],
         [
             'text' => 'Members',
             'route' => 'admin.members.index',

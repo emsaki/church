@@ -34,6 +34,13 @@ class AuthenticatedSessionController extends Controller
         if ($user->hasRole('admin')) {
             return redirect()->route('admin.dashboard');
         }
+        
+        if (auth()->user()->role === 'priest' && !$user->priest->active) {
+            Auth::logout();
+            return redirect()->route('login')
+                ->withErrors(['email' => 'Your priest account is deactivated.']);
+        }
+
         if ($user->hasRole('priest')) {
             return redirect()->route('priest.dashboard');
         }
