@@ -36,7 +36,7 @@
             <thead class="bg-light">
                 <tr>
                     <th>Name</th>
-                    <th>Priest In-Charge</th>
+                    <th>Priest(s)</th>
                     <th>Email</th>
                     <th>Phone</th>
                     <th>Location</th>
