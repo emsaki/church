@@ -2,10 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class AdminUserSeeder extends Seeder
 {
@@ -14,16 +15,34 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::updateOrCreate(
-            [
-                'email' => 'admin@pmis.com',
-            ],
-            [
-                'name'              => 'System Administrator',
-                'password'          => Hash::make('ChangeMe123!'),
-                'role'              => 'admin',
-                'email_verified_at' => now(),
-            ]
-        );
+        DB::transaction(function () {
+
+            /* -------------------------------
+             | 1. Ensure ADMIN role exists
+             * ------------------------------- */
+            $adminRole = Role::updateOrCreate(
+                ['name' => 'admin'],
+                ['label' => 'System Administrator']
+            );
+
+            /* -------------------------------
+             | 2. Create / Update Admin user
+             * ------------------------------- */
+            $adminUser = User::updateOrCreate(
+                ['email' => 'admin@pmis.org'],
+                [
+                    'name'              => 'System Administrator',
+                    'password'          => Hash::make(env('ADMIN_PASSWORD', 'ChangeMe123!')),
+                    'email_verified_at' => now(),
+                ]
+            );
+
+            /* -------------------------------
+             | 3. Attach role (pivot-safe)
+             * ------------------------------- */
+            if (! $adminUser->roles()->where('roles.id', $adminRole->id)->exists()) {
+                $adminUser->roles()->attach($adminRole->id);
+            }
+        });
     }
 }
