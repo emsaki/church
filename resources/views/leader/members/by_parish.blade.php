@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Assign SCC Leader')
+@section('title', 'Parish Members')
 
 @section('content_header')
     <h1 class="font-weight-bold">
@@ -12,8 +12,8 @@
 
 {{-- BACK LINK --}}
 <div class="mb-3">
-    <a href="{{ route('admin.parishes.index') }}" class="btn btn-sm btn-secondary">
-        <i class="fas fa-arrow-left"></i> Back to Parishes
+    <a href="{{ route('leader.members.index') }}" class="btn btn-sm btn-secondary">
+        <i class="fas fa-arrow-left"></i> Back to Members
     </a>
 </div>
 
@@ -56,7 +56,7 @@
                         </td>
 
                         <td class="text-right">
-                            <a href="{{ route('admin.members.edit', $m) }}"
+                            <a href="{{ route('leader.members.edit', $m) }}"
                                class="btn btn-sm btn-primary">
                                 <i class="fas fa-edit"></i> Edit
                             </a>

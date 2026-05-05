@@ -31,10 +31,10 @@
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('admin.members.store') }}">
+                <form method="POST" action="{{ route('leader.members.store') }}">
                     @csrf
 
-                    @include('admin.members._form')
+                    @include('leader.members._form')
 
                 </form>
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -30,33 +31,55 @@ class AuthenticatedSessionController extends Controller
 
         $user = Auth::user();
 
-        // ROLE-BASED REDIRECT
+        /* ======================================
+         | FORCE PASSWORD CHANGE (FIRST LOGIN)
+         * ====================================== */
+        if ($user->must_change_password) {
+            return redirect()->route('password.change');
+        }
+
+        /* ======================================
+         | ROLE / STATUS CHECKS
+         * ====================================== */
+
+        // Admin
         if ($user->hasRole('admin')) {
             return redirect()->route('admin.dashboard');
         }
-        
-        if (auth()->user()->role === 'priest' && !$user->priest->active) {
+
+        // Priest but deactivated
+        if (
+            $user->hasRole('priest') &&
+            $user->priest &&
+            ! $user->priest->active
+        ) {
             Auth::logout();
+
             return redirect()->route('login')
                 ->withErrors(['email' => 'Your priest account is deactivated.']);
         }
 
+        // Priest
         if ($user->hasRole('priest')) {
             return redirect()->route('priest.dashboard');
         }
+
+        // SCC Leader
         if ($user->hasRole('scc_leader')) {
             return redirect()->route('leader.dashboard');
         }
 
+        // Fallback
         return redirect()->route('dashboard');
     }
 
     public function destroy(Request $request)
     {
         Auth::guard('web')->logout();
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect()->route('login');
     }
 }

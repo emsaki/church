@@ -93,11 +93,11 @@
             </thead>
 
             <tbody>
-            @foreach($members as $member)
+            @forelse($members as $member)
                 <tr>
                     <td>{{ $member->full_name }}</td>
                     <td>
-                        <span class="badge bg-primary">{{ $member->parish->name }}</span>
+                        <span class="badge bg-primary">{{ $member->parish?->name ?? '-' }}</span>
                     </td>
                     <td>
                         <span class="badge bg-secondary">
@@ -121,11 +121,6 @@
                         <a href="{{ route('leader.tithes.scc_member', $member->id) }}"
                         class="btn btn-sm btn-info">
                             <i class="fas fa-list"></i>
-                        </a>
-
-                        <a href="{{ route('leader.tithes.receipt', $member) }}" 
-                        class="btn btn-sm btn-info">
-                            <i class="fas fa-file-pdf"></i>
                         </a>
 
                         {{-- EDIT --}}
@@ -153,10 +148,22 @@
                         </form>
                     </td>
                 </tr>
-            @endforeach
+            @empty
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-4">
+                        <i class="fas fa-info-circle"></i> No members found.
+                    </td>
+                </tr>
+            @endforelse
             </tbody>
         </table>
     </div>
+
+    @if($members->hasPages())
+        <div class="card-footer">
+            {{ $members->withQueryString()->links() }}
+        </div>
+    @endif
 </div>
 
 @stop

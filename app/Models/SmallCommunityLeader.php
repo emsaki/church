@@ -29,7 +29,7 @@ class SmallCommunityLeader extends Model
 
     public static function getLeaderSccId($userId)
     {
-        return self::where('userr_id', $userId)->value('small_community_id');
+        return self::where('user_id', $userId)->value('small_community_id');
     }
 
     public static function getLeaderScc($userId)
@@ -37,4 +37,3 @@ class SmallCommunityLeader extends Model
         return self::with('community.parish')->where('user_id', $userId)->first();
     }
 }
-

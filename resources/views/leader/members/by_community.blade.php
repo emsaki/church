@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Assign SCC Leader')
+@section('title', 'SCC Members')
 
 @section('content_header')
     <h1 class="font-weight-bold">
@@ -13,8 +13,8 @@
 
 {{-- BACK BUTTON --}}
 <div class="mb-3">
-    <a href="{{ route('admin.communities.index') }}" class="btn btn-secondary btn-sm">
-        <i class="fas fa-arrow-left"></i> Back to Communities
+    <a href="{{ route('leader.members.index') }}" class="btn btn-secondary btn-sm">
+        <i class="fas fa-arrow-left"></i> Back to Members
     </a>
 </div>
 
@@ -25,7 +25,7 @@
     <div class="card-header bg-primary text-white">
         <h3 class="card-title mb-0">
             <i class="fas fa-church"></i>
-            {{ $community->name }} — {{ $community->parish->name }}
+            {{ $community->name }} - {{ $community->parish->name }}
         </h3>
     </div>
 
@@ -50,7 +50,7 @@
                         <td>{{ $m->phone ?? '-' }}</td>
 
                         <td class="text-right">
-                            <a href="{{ route('admin.members.edit', $m) }}"
+                            <a href="{{ route('leader.members.edit', $m) }}"
                                class="btn btn-sm btn-primary">
                                 <i class="fas fa-edit"></i> Edit
                             </a>

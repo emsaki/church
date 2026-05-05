@@ -5,7 +5,7 @@
 @section('content_header')
     <h1 class="font-weight-bold">
         <i class="fas fa-user-edit text-primary"></i>
-        Edit Member — {{ $member->full_name }}
+        Edit Member - {{ $member->full_name }}
     </h1>
 @stop
 
@@ -32,11 +32,11 @@
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('admin.members.update', $member) }}">
+                <form method="POST" action="{{ route('leader.members.update', $member) }}">
                     @csrf
                     @method('PUT')
 
-                    @include('admin.members._form')
+                    @include('leader.members._form')
 
                 </form>
 

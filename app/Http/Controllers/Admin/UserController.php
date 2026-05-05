@@ -24,14 +24,37 @@ class UserController extends Controller
     }
 
     /** STORE NEW USER */
+    // public function store(Request $request)
+    // {
+    //     $data = $request->validate([
+    //         'name'     => 'required|string|max:255',
+    //         'email'    => 'required|email|unique:users,email',
+    //         'phone'    => 'nullable|string|max:20',
+    //         'password' => 'required|min:6',
+    //         'role_id'  => 'nullable|exists:roles,id'
+    //     ]);
+
+    //     $user = User::create([
+    //         'name'     => $data['name'],
+    //         'email'    => $data['email'],
+    //         'phone'    => $data['phone'],
+    //         'password' => bcrypt($data['password']),
+    //     ]);
+
+    //     $user->roles()->sync([$request->role_id]);
+    //     return redirect()->route('admin.users.index')
+    //         ->with('success', 'User created successfully.');
+    // }
+
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email',
-            'phone'    => 'nullable|string|max:20',
-            'password' => 'required|min:6',
-            'role_id'  => 'nullable|exists:roles,id'
+            'name'      => 'required|string|max:255',
+            'email'     => 'required|email|unique:users,email',
+            'phone'     => 'nullable|string|max:20',
+            'password'  => 'required|min:6',
+            'role_ids'  => 'nullable|array',
+            'role_ids.*'=> 'exists:roles,id',
         ]);
 
         $user = User::create([
@@ -41,7 +64,17 @@ class UserController extends Controller
             'password' => bcrypt($data['password']),
         ]);
 
-        $user->roles()->sync([$request->role_id]);
+        // Always assign MEMBER role
+        $memberRoleId = \App\Models\Role::where('name', 'scc_member')->value('id');
+
+        $roles = $data['role_ids'] ?? [];
+
+        // Ensure member role is always included
+        if ($memberRoleId && !in_array($memberRoleId, $roles)) {
+            $roles[] = $memberRoleId;
+        }
+
+        $user->roles()->sync($roles);
         return redirect()->route('admin.users.index')
             ->with('success', 'User created successfully.');
     }

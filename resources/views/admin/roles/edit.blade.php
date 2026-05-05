@@ -17,7 +17,7 @@
 
             <div class="form-group">
                 <label>Role Name</label>
-                <input name="name" value="{{ $role->name }}" class="form-control" required>
+                <input name="name" value="{{ $role->label }}" class="form-control" required>
             </div>
             <button class="btn btn-primary mt-3">Save Changes</button>
 

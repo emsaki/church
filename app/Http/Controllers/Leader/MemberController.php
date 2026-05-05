@@ -13,13 +13,7 @@ class MemberController extends Controller
 {
     public function __construct()
     {
-        // Admin can do everything
-        $this->middleware('role:admin')->only(['destroy']);
-
-        // SCC Leaders restricted access
-        // $this->middleware('role:scc_leader')->only([
-        //     'index', 'create', 'store', 'edit', 'update'
-        // ]);
+        $this->middleware('role:scc_leader');
     }
 
     /* ============================================================
@@ -42,24 +36,6 @@ class MemberController extends Controller
             'communities' => SmallCommunity::where('id', $sccId)->get(),
         ]);
 
-        // ADMIN FILTERING
-        $query = Member::with(['parish', 'community']);
-
-        if ($request->filled('parish_id')) {
-            $query->where('parish_id', $request->parish_id);
-        }
-
-        if ($request->filled('community_id')) {
-            $query->where('small_community_id', $request->community_id);
-        }
-
-        $members = $query->orderBy('first_name')->paginate(20);
-
-        return view('leader.members.index', [
-            'members' => $members,
-            'parishes' => Parish::all(),
-            'communities' => SmallCommunity::all(),
-        ]);
     }
 
     /* ============================================================
@@ -134,12 +110,6 @@ class MemberController extends Controller
             'leader_scc_id' => $scc->id,
         ]);
 
-        // Admin
-        return view('leader.members.edit', [
-            'member' => $member,
-            'parishes' => Parish::all(),
-            'communities' => SmallCommunity::all(),
-        ]);
     }
 
     /* ============================================================
@@ -184,6 +154,9 @@ class MemberController extends Controller
      * ============================================================ */
     public function destroy(Member $member)
     {
+        $sccId = SmallCommunityLeader::getLeaderSccId(auth()->id());
+        abort_unless($member->small_community_id == $sccId, 403);
+
         $member->delete();
 
         return redirect()->route('leader.members.index')

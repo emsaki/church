@@ -4,7 +4,7 @@
 
 @section('content_header')
 <h1 class="font-weight-bold text-primary">
-    <i class="fas fa-donate"></i> SCC Tithe Records – {{ $leaderScc->name }}
+    <i class="fas fa-donate"></i> Tithe Records - {{ $member->full_name }}
 </h1>
 @stop
 

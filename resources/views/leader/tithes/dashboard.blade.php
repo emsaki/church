@@ -4,7 +4,7 @@
 
 @section('content_header')
 <h1 class="font-weight-bold text-primary">
-    <i class="fas fa-chart-line"></i> Tithe Dashboard – {{ $leaderScc->name }}
+    <i class="fas fa-chart-line"></i> Tithe Dashboard - {{ $leaderScc->community?->name ?? 'N/A' }}
 </h1>
 @stop
 
@@ -61,12 +61,16 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($topMembers as $tm)
+                @forelse($topMembers as $tm)
                 <tr>
-                    <td>{{ $tm->member->full_name }}</td>
+                    <td>{{ $tm->member?->full_name ?? '-' }}</td>
                     <td>{{ number_format($tm->total) }} Tsh</td>
                 </tr>
-                @endforeach
+                @empty
+                <tr>
+                    <td colspan="2" class="text-center text-muted">No contributions yet.</td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

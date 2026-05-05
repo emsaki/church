@@ -12,7 +12,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'verified.phone' => \App\Http\Middleware\EnsurePhoneIsVerified::class,
+            'force.password.change' => \App\Http\Middleware\ForcePasswordChange::class,
             'role' => \App\Http\Middleware\RoleMiddleware::class,
         ]);
     })->withProviders([

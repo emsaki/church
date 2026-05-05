@@ -1,4 +1,4 @@
-{{-- resources/views/admin/members/_form.blade.php --}}
+{{-- resources/views/leader/members/_form.blade.php --}}
 
 @php
     $isEdit = isset($member);
@@ -152,6 +152,6 @@
 {{-- ========================= --}}
 <div class="text-right mt-4">
     <button class="btn btn-success px-4 py-2">
-        <i class="fas fa-save"></i> Update Member
+        <i class="fas fa-save"></i> {{ $isEdit ? 'Update Member' : 'Save Member' }}
     </button>
 </div>

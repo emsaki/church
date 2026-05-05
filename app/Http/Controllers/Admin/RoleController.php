@@ -51,19 +51,35 @@ class RoleController extends Controller
         ]);
     }
 
+    // public function assign(Request $request)
+    // {
+    //     $request->validate([
+    //         'user_id' => 'required|exists:users,id',
+    //         'role_id' => 'required|exists:roles,id'
+    //     ]);
+
+    //     $user = User::findOrFail($request->user_id);
+
+    //     // Attach role (OR replace existing role)
+    //     $user->roles()->sync([$request->role_id]);  
+
+    //     return back()->with('success', 'Role assigned to user.');
+    // }
+
     public function assign(Request $request)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'role_id' => 'required|exists:roles,id'
+            'user_id'   => 'required|exists:users,id',
+            'role_ids'  => 'required|array',
+            'role_ids.*'=> 'exists:roles,id',
         ]);
 
         $user = User::findOrFail($request->user_id);
 
-        // Attach role (OR replace existing role)
-        $user->roles()->sync([$request->role_id]);  
+        // Attach roles without removing existing ones
+        $user->roles()->syncWithoutDetaching($request->role_ids);
 
-        return back()->with('success', 'Role assigned to user.');
+        return back()->with('success', 'Roles assigned successfully.');
     }
 
     public function destroy(Role $role)

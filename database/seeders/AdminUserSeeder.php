@@ -34,6 +34,7 @@ class AdminUserSeeder extends Seeder
                     'name'              => 'System Administrator',
                     'password'          => Hash::make(env('ADMIN_PASSWORD', 'ChangeMe123!')),
                     'email_verified_at' => now(),
+                    'must_change_password' => true,
                 ]
             );
 

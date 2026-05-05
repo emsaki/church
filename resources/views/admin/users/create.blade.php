@@ -30,11 +30,20 @@
                 <input name="password" type="password" class="form-control" required>
             </div>
 
-            <div class="form-group">
+            {{-- <div class="form-group">
                 <label>Assign Roles</label>
                 <select name="role_id" class="form-control">
                     @foreach($roles as $r)
-                        <option value="{{ $r->id }}">{{ $r->name }}</option>
+                        <option value="{{ $r->id }}">{{ $r->label }}</option>
+                    @endforeach
+                </select>
+            </div> --}}
+
+            <div class="form-group">
+                <label>Roles</label>
+                <select name="role_ids[]" class="form-control select2" multiple required>
+                    @foreach($roles as $r)
+                        <option value="{{ $r->id }}">{{ $r->label }}</option>
                     @endforeach
                 </select>
             </div>
@@ -48,3 +57,10 @@
 </div>
 
 @stop
+@push('js')
+<script>
+$(document).ready(function () {
+    $('.select2').select2();
+});
+</script>
+@endpush

@@ -92,17 +92,17 @@ class User extends Authenticatable
 
     public function isAdmin()
     {
-        return $this->role === 'admin';
+        return $this->hasRole('admin');
     }
 
     public function isPriest()
     {
-        return $this->role === 'priest';
+        return $this->hasRole('priest');
     }
 
     public function isSccLeader()
     {
-        return $this->role === 'scc_leader';
+        return $this->hasRole('scc_leader');
     }
 
 }

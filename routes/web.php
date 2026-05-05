@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Auth\OtpController;
 use App\Http\Controllers\Admin\MemberController;
 use App\Http\Controllers\Admin\ParishController;
 use App\Http\Controllers\Admin\PriestController;
@@ -21,14 +20,63 @@ use App\Http\Controllers\Admin\SmallCommunityLeaderController;
 //     return view('welcome');
 // });
 Route::get('/', function () {
-    if (auth()->check()) {
-        if (auth()->user()->isAdmin()) return redirect()->route('admin.dashboard');
-        if (auth()->user()->isPriest()) return redirect()->route('priest.dashboard');
-        if (auth()->user()->isSccLeader()) return redirect()->route('leader.dashboard');
+    return redirect()->route('login');
+});
+
+Route::middleware('auth')
+    ->get('/redirect-after-login', function () {
+
+        $user = auth()->user();
+
+        if ($user->isAdmin()) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        if ($user->isPriest()) {
+            return redirect()->route('priest.dashboard');
+        }
+
+        if ($user->isSccLeader()) {
+            return redirect()->route('leader.dashboard');
+        }
 
         return redirect()->route('dashboard');
-    }
-    return view('auth.login');
+
+    })
+    ->name('redirect.after.login');
+
+Route::middleware('auth')->group(function () {
+
+    Route::get('/change-password', function () {
+        return view('auth.change-password');
+    })->name('password.change');
+
+    Route::post('/change-password', function (\Illuminate\Http\Request $request) {
+        $request->validate([
+            'password' => 'required|min:8|confirmed',
+            ]);
+            
+        $user = auth()->user();
+        $user->password = bcrypt($request->password);
+        $user->must_change_password = false;
+        $user->save();
+
+        if ($user->hasRole('admin')) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        if ($user->hasRole('priest')) {
+            return redirect()->route('priest.dashboard');
+        }
+
+        if ($user->hasRole('scc_leader')) {
+            return redirect()->route('leader.dashboard');
+        }
+
+        return redirect()->route('dashboard');
+
+    })->name('password.force.update');
+
 });
 
 // AJAX route: Load communities by parish (for dropdown)
@@ -37,14 +85,9 @@ Route::get('/communities/by-parish/{parish}', function ($parishId) {
 });
 
 // ---------------------------------------------------------------
-// AUTHENTICATED USERS (OTP + Dashboard)
+// AUTHENTICATED USERS
 // ---------------------------------------------------------------
 Route::middleware('auth')->group(function () {
-
-    // OTP step
-    Route::get('/verify-otp', [OtpController::class, 'showVerifyForm'])->name('otp.verify.form');
-    Route::post('/verify-otp', [OtpController::class, 'verify'])->name('otp.verify');
-
     // Dashboard
     Route::get('/dashboard', function () {
         return view('dashboard', [
@@ -53,7 +96,7 @@ Route::middleware('auth')->group(function () {
             'parishCount' => \App\Models\Parish::count(),
             'priestCount' => \App\Models\Priest::count(),
         ]);
-    })->middleware(['auth', 'verified.phone'])->name('dashboard');
+    })->middleware(['auth', 'force.password.change'])->name('dashboard');
 
     // Profile Routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -64,7 +107,7 @@ Route::middleware('auth')->group(function () {
 // ---------------------------------------------------------------
 // ADMIN ROUTES
 // ---------------------------------------------------------------
-Route::middleware(['auth', 'role:admin'])
+Route::middleware(['auth', 'force.password.change', 'role:admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
@@ -156,7 +199,7 @@ Route::middleware(['auth', 'role:admin'])
 // ---------------------------------------------------------------
 // PRIEST ROUTES
 // ---------------------------------------------------------------
-Route::middleware(['auth', 'role:priest'])
+Route::middleware(['auth', 'force.password.change', 'role:priest'])
     ->prefix('priest')
     ->name('priest.')
     ->group(function () {
@@ -194,7 +237,7 @@ Route::middleware(['auth', 'role:priest'])
 // ---------------------------------------------------------------
 // SCC LEADER ROUTES
 // ---------------------------------------------------------------
-Route::middleware(['auth', 'role:scc_leader'])
+Route::middleware(['auth', 'force.password.change', 'role:scc_leader'])
     ->prefix('leader')
     ->name('leader.')
     ->group(function () {
@@ -215,7 +258,7 @@ Route::middleware(['auth', 'role:scc_leader'])
         // Baptisms
         Route::resource('baptisms', \App\Http\Controllers\Leader\BaptismController::class)->only(['index','create','store']);
         // Members
-        Route::resource('members', \App\Http\Controllers\Leader\MemberController::class);
+        Route::resource('members', \App\Http\Controllers\Leader\MemberController::class)->except(['show']);
     });
 
 require __DIR__.'/auth.php';

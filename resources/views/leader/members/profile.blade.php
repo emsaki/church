@@ -133,19 +133,19 @@
         {{-- ========================= --}}
         <div class="d-flex justify-content-end gap-2">
 
-            <a href="{{ route('admin.members.index') }}" class="btn btn-secondary mr-2">
+            <a href="{{ route('leader.members.index') }}" class="btn btn-secondary mr-2">
                 <i class="fas fa-arrow-left"></i> Back
             </a>
 
             @if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('scc_leader'))
-                <a href="{{ route('admin.members.edit', $member) }}"
+                <a href="{{ route('leader.members.edit', $member) }}"
                    class="btn btn-primary mr-2">
                     <i class="fas fa-edit"></i> Edit Member
                 </a>
             @endif
 
             @if(auth()->user()->hasRole('admin'))
-                <form action="{{ route('admin.members.destroy', $member) }}" method="POST"
+                <form action="{{ route('leader.members.destroy', $member) }}" method="POST"
                       onsubmit="return confirm('Are you sure you want to delete this member?');">
                     @csrf
                     @method('DELETE')

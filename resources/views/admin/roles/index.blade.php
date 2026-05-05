@@ -24,7 +24,7 @@
     <tbody>
         @foreach($roles as $role)
         <tr>
-            <td>{{ $role->name }}</td>
+            <td>{{ $role->label }}</td>
             <td>{{ $role->users_count }}</td>
             <td>
                 <a href="{{ route('admin.roles.edit', $role) }}" class="btn btn-warning btn-sm">Edit</a>
